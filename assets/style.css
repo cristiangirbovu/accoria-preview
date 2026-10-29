@@ -294,3 +294,109 @@ main{container-type:inline-size;container-name:pagina}
 .fab{position:fixed;right:20px;bottom:20px;z-index:40;width:56px;height:56px;border-radius:50%;background:var(--pruna);color:var(--ivoriu);display:flex;align-items:center;justify-content:center;box-shadow:0 14px 28px -10px rgba(46,21,41,.6);transition:transform .15s,background-color .2s}
 .fab:hover{background:var(--pruna-inchis);transform:translateY(-2px);text-decoration:none}
 html.meniu-deschis .fab{display:none}
+
+/* Paginile interioare: antetul paginii pe prună, fir de navigare, grile și proză */
+.cap-pagina{position:relative;background:var(--pruna);color:var(--ivoriu);overflow:hidden;isolation:isolate;padding:36px 0 44px}
+.cap-pagina::before{content:"";position:absolute;inset:0;z-index:-2;background:radial-gradient(900px 500px at 8% -20%, rgba(122,58,107,.8), transparent 60%),radial-gradient(700px 500px at 100% 120%, rgba(40,10,34,.9), transparent 55%)}
+.cap-pagina::after{content:"";position:absolute;inset:0;z-index:-1;background-image:var(--granulatie);opacity:.13;pointer-events:none}
+.cap-pagina h1{color:var(--ivoriu);font-size:clamp(30px, 2vw + 16px, 42px);letter-spacing:-.015em;line-height:1.12;max-width:22ch}
+.cap-pagina .lead{margin-top:16px;font-size:18.5px;color:var(--ivoriu-85);max-width:62ch}
+.cap-pagina .pastila{margin-bottom:16px}
+.cap-pagina .meta{margin-top:14px;font-size:15px;color:var(--ivoriu-70)}
+.crumbs{margin-bottom:22px;font-size:14px}
+.crumbs ol{display:flex;flex-wrap:wrap;gap:6px 0;color:var(--ivoriu-70)}
+.crumbs li+li::before{content:"/";margin:0 8px;color:var(--ivoriu-18)}
+.crumbs a{color:var(--ivoriu-85);font-weight:500}
+.crumbs li[aria-current]{color:var(--ivoriu)}
+@container pagina (min-width: 860px){.cap-pagina{padding:48px 0 60px}}
+.grid-2,.grid-3,.grid-4{display:grid;gap:16px}
+.grid-2 .card,.grid-3 .card,.grid-4 .card{padding:26px 24px}
+.grid-2 h3,.grid-3 h3,.grid-4 h3{font-size:18.5px}
+.grid-2 p,.grid-3 p,.grid-4 p{margin-top:8px;font-size:15.5px;color:var(--text2)}
+@container pagina (min-width: 600px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr 1fr}}
+@container pagina (min-width: 960px){.grid-3{grid-template-columns:repeat(3,1fr);gap:20px}.grid-4{grid-template-columns:repeat(4,1fr);gap:20px}.grid-2{gap:24px}}
+.intro-grid,.despre .despre-grid{display:grid;gap:32px}
+.card-include{padding:28px 28px 14px}
+.card-include h2{font-size:20px;margin-bottom:8px}
+.card-include .bife li{font-size:15.5px;padding:11px 0 11px 28px}
+.card-include .bife li::before{top:1.3em;width:14px}
+.card-include .bife li:first-child{border-top:0}
+.card-include .bife li:last-child{border-bottom:0}
+@container pagina (min-width: 860px){.intro-grid{grid-template-columns:1.1fr .9fr;gap:56px;align-items:start}}
+.proza p{font-size:17.5px;line-height:1.6}
+.proza p+p{margin-top:16px}
+.proza-p{font-size:17.5px;line-height:1.6;color:var(--text)}
+.pasi.auto{grid-template-columns:repeat(auto-fit,minmax(min(210px,100%),1fr))}
+.pasi.lista{grid-template-columns:1fr;gap:12px;margin-top:16px}
+.contact-grid>*{min-width:0}
+.pasi.lista .card{padding:18px 20px;flex-direction:row;align-items:flex-start;gap:16px}
+.pasi.lista .card div{min-width:0;flex:1}
+.pasi.lista .card h3{margin-top:0}
+.pasi.lista .card h3{font-size:17px}
+.pasi.lista .card p{margin-top:4px}
+.pasi.lista .sigiliu{width:40px;height:40px;font-size:16px}
+.serv-grid.patru{gap:16px}
+@container pagina (min-width: 960px){.serv-grid.patru{grid-template-columns:repeat(4,1fr)}}
+.h-mic.sus{margin-top:36px}
+.sus-0{margin-top:0}
+.card-persoana{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.card-persoana .sigiliu-mare{display:block;margin-bottom:12px}
+.card-persoana h3{font-size:22px}
+.card-persoana p{color:var(--text2);font-size:15.5px}
+
+/* Contact */
+.contact-grid{display:grid;gap:36px}
+.contact-grid h2{font-size:24px}
+.contact-list.pruna{margin-top:20px;font-size:18px;font-weight:600}
+.contact-list.pruna a{color:var(--pruna)}
+.contact-list.pruna li:last-child{font-weight:500;color:var(--text2);font-size:16px}
+.contact-grid .sec-text{margin-top:18px;font-size:16px}
+.formular.card{padding:28px 24px}
+.formular h2{font-size:22px;margin-bottom:4px}
+.sec.crem .formular.card{background:var(--ivoriu)}
+@container pagina (min-width: 960px){.contact-grid{grid-template-columns:.9fr 1.1fr;gap:64px;align-items:start}.formular.card{padding:36px 32px}}
+.harta-acord{display:flex;flex-direction:column;justify-content:center;gap:18px;min-height:280px;padding:32px;border-radius:var(--r-m);background:var(--ivoriu);border:1px solid var(--linie)}
+.harta-acord p{max-width:52ch;color:var(--text2)}
+.harta-acord-actiuni{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center}
+.harta-deschide{font-weight:600;text-decoration:underline;text-decoration-color:var(--auriu);text-decoration-thickness:2px;text-underline-offset:4px}
+.harta-contact{display:block;width:100%;height:380px;border:0;border-radius:var(--r-m);background:var(--crem)}
+
+/* Blog */
+.articole-grid.doua{margin-top:0}
+.art-card .data{font-size:14px;color:var(--text2)}
+@container pagina (min-width: 760px){.articole-grid.doua{grid-template-columns:1fr 1fr;gap:20px}}
+.proza.articol,.proza.legal{max-width:780px}
+.proza.articol p,.proza.legal p{font-size:17.5px;line-height:1.65}
+.proza.articol h2,.proza.legal h2{font-size:24px;margin:36px 0 12px}
+.proza.articol ul,.proza.articol ol,.proza.legal ul{margin:14px 0 14px;padding-left:0}
+.proza.articol ul li,.proza.legal ul li{position:relative;padding:5px 0 5px 30px;font-size:17px;line-height:1.55}
+.proza.articol ul li::before,.proza.legal ul li::before{content:"";position:absolute;left:0;top:.95em;width:16px;height:3px;border-radius:2px;background:var(--auriu)}
+.proza.articol ol{counter-reset:pas}
+.proza.articol ol li{position:relative;padding:6px 0 6px 44px;font-size:17px;line-height:1.55;counter-increment:pas}
+.proza.articol ol li::before{content:counter(pas);position:absolute;left:0;top:7px;width:28px;height:28px;border-radius:50%;background:var(--pruna);color:var(--ivoriu);font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center}
+.nota-bloc{margin-top:28px;padding:18px 22px;background:var(--crem);border-radius:var(--r-m);font-size:15.5px;color:var(--text2)}
+.proza.legal .intro{font-size:18px;color:var(--text2);margin-bottom:8px}
+.tabel-derulant{overflow:auto;margin:16px 0 20px;border:1px solid var(--linie);border-radius:var(--r-m)}
+.tabel-derulant table{width:100%;border-collapse:collapse;font-size:15px;min-width:640px}
+.tabel-derulant th,.tabel-derulant td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--linie);vertical-align:top}
+.tabel-derulant th{background:var(--crem);color:var(--pruna);font-weight:600}
+.tabel-derulant tr:last-child td{border-bottom:0}
+
+/* Bannerul și setările de cookie-uri */
+.cookie-banner{position:fixed;left:16px;right:16px;bottom:16px;z-index:70;max-width:720px;margin:0 auto;background:var(--ivoriu);color:var(--text);border:1px solid var(--linie);border-radius:var(--r-m);padding:22px 24px;box-shadow:var(--umbra)}
+.cookie-titlu{font-weight:600;color:var(--pruna);font-size:17px}
+.cookie-text{margin-top:8px;font-size:14.5px;color:var(--text2)}
+.cookie-text a{font-weight:600}
+.cookie-butoane{display:flex;flex-wrap:wrap;gap:10px 12px;align-items:center;margin-top:16px}
+.cookie-butoane .btn{min-height:44px;padding:10px 18px;font-size:15px}
+.cookie-link{background:none;border:0;padding:8px 4px;font:inherit;font-size:15px;font-weight:600;color:var(--pruna);cursor:pointer;text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--auriu);text-decoration-thickness:2px}
+.cookie-setari{margin:auto;width:min(92vw,520px);border:1px solid var(--linie);border-radius:var(--r-m);padding:0;background:var(--ivoriu);color:var(--text);box-shadow:var(--umbra)}
+.cookie-setari::backdrop{background:rgba(46,21,41,.45)}
+.cookie-setari form{position:relative;padding:28px 26px}
+.cookie-setari h2{font-size:22px;margin-bottom:16px}
+.cookie-inchide{position:absolute;top:14px;right:14px;width:36px;height:36px;border:0;border-radius:50%;background:var(--crem);color:var(--pruna);font-size:22px;line-height:1;cursor:pointer}
+.cookie-categorie{display:grid;grid-template-columns:22px 1fr;gap:12px;align-items:start;padding:12px 0;border-top:1px solid var(--linie);font-size:15px;color:var(--text2);cursor:pointer}
+.cookie-categorie input{width:20px;height:20px;margin:2px 0 0;accent-color:var(--pruna)}
+.cookie-categorie b{display:block;color:var(--text);font-weight:600;margin-bottom:2px}
+.cookie-nota{margin-top:14px;font-size:14px;color:var(--text2)}
+html.meniu-deschis .cookie-banner{display:none}
