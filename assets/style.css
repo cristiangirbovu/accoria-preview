@@ -1,0 +1,296 @@
+/* Accoria: stilul site-ului. Tokenii vin din manualul de brand (paleta B: prună și auriu pe fonduri calde; Geologica).
+   Sistem de colțuri: butoane și câmpuri 8 px, carduri și cadre 14 px, pastile și sigilii rotunde. Un singur accent: auriul.
+   Elementele de brand: linia aurie sub titluri, sigiliul (cerc prună cu linie aurie) pentru numere, pattern-ul cu emblema pe fonduri prună. */
+@font-face{font-family:"Geologica";font-style:normal;font-weight:300 700;font-display:swap;src:url("fonts/geologica-latin-ext.woff2") format("woff2");unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;}
+@font-face{font-family:"Geologica";font-style:normal;font-weight:300 700;font-display:swap;src:url("fonts/geologica-latin.woff2") format("woff2");unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+
+:root{
+  --pruna:#5B1F4E; --pruna-inchis:#3A1232; --pruna-deschisa:#7A3A6B; --pruna-pal:#F1E6EE;
+  --auriu:#E3A72F; --auriu-inchis:#CD9320;
+  --ivoriu:#FFFBF5; --crem:#F8F1E7; --text:#2E1529; --text2:#6E5E68; --linie:#EADFD3; --linie-2:#DCCFC2;
+  --ivoriu-85:rgba(255,251,245,.86); --ivoriu-70:rgba(255,251,245,.72); --ivoriu-18:rgba(255,251,245,.18);
+  --r-s:8px; --r-m:14px;
+  --umbra:0 24px 48px -28px rgba(46,21,41,.35);
+  --umbra-card:0 18px 36px -22px rgba(46,21,41,.28);
+  --wrap:1180px;
+  --granulatie:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.9'/%3E%3C/svg%3E");
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;font-family:Geologica,Arial,sans-serif;font-size:17px;line-height:1.5;color:var(--text);background:var(--ivoriu);overflow-wrap:break-word;-webkit-font-smoothing:antialiased}
+img,svg{display:block;max-width:100%}
+a{color:var(--pruna);text-decoration:none;font-weight:500}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--auriu);outline-offset:3px;border-radius:4px}
+h1,h2,h3{margin:0;font-weight:600;line-height:1.15;letter-spacing:-.01em;color:var(--pruna)}
+p,dl,dd{margin:0}
+ul,ol{margin:0;padding:0;list-style:none}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 24px}
+.sari{position:absolute;left:-999px;top:8px;background:var(--pruna);color:var(--ivoriu);padding:10px 14px;border-radius:var(--r-s);z-index:100}
+.sari:focus{left:8px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}}
+
+/* Butoane, pastile, linii, sigilii */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:12px 24px;border-radius:var(--r-s);font-family:inherit;font-weight:600;font-size:16px;line-height:1.2;border:1.5px solid transparent;cursor:pointer;white-space:nowrap;transition:background-color .2s,color .2s,border-color .2s,transform .12s}
+.btn:hover{text-decoration:none}
+.btn:active{transform:translateY(1px)}
+.btn-auriu{background:var(--auriu);color:var(--text)}
+.btn-auriu:hover{background:var(--auriu-inchis)}
+.btn-pruna{background:var(--pruna);color:var(--ivoriu)}
+.btn-pruna:hover{background:var(--pruna-inchis)}
+.btn-contur-ivoriu{border-color:var(--ivoriu-70);color:var(--ivoriu)}
+.btn-contur-ivoriu:hover{border-color:var(--ivoriu);background:rgba(255,251,245,.08)}
+.btn-contur-pruna{border-color:var(--pruna);color:var(--pruna)}
+.btn-contur-pruna:hover{background:var(--pruna-pal)}
+.pastila{display:inline-block;background:var(--auriu);color:var(--text);font-size:12.5px;font-weight:600;letter-spacing:.02em;line-height:1.2;padding:6px 12px;border-radius:999px}
+.linie{display:block;width:64px;height:8px;border-radius:4px;background:var(--auriu);margin-top:18px}
+.linie-mica{display:block;width:36px;height:5px;border-radius:3px;background:var(--auriu);margin-bottom:16px}
+.sigiliu{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:48px;height:48px;border-radius:50%;background:var(--pruna);color:var(--ivoriu);font-weight:600;font-size:18px;line-height:1;flex-shrink:0}
+.sigiliu::after{content:"";width:16px;height:3px;border-radius:2px;background:var(--auriu);margin-top:4px}
+.pattern{position:relative;isolation:isolate}
+.pattern::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;background-image:url("img/pattern-emblema.svg"),url("img/pattern-emblema.svg");background-size:224px 224px;background-position:0 0,112px 112px;pointer-events:none}
+
+/* Carduri: crem pe secțiuni ivoriu, ivoriu pe secțiuni crem; ridicare discretă la trecerea cu mouse-ul */
+.card{position:relative;background:var(--crem);border:1px solid transparent;border-radius:var(--r-m);padding:28px 26px;transition:transform .2s,box-shadow .2s,border-color .2s}
+.sec.crem{background:var(--crem)}
+.sec.crem .card{background:var(--ivoriu);border-color:var(--linie)}
+.serv-card:hover,.art-card:hover,.cine-grid .card:hover,.pasi .card:hover{transform:translateY(-3px);box-shadow:var(--umbra-card)}
+.acopera::after{content:"";position:absolute;inset:0;border-radius:inherit}
+
+/* Antetul: logo pe ivoriu, meniu în prună, un singur buton auriu (manual, p. 21) */
+.antet{position:sticky;top:0;z-index:50;background:var(--ivoriu);border-bottom:1px solid var(--linie);container-type:inline-size;container-name:antet}
+.bara{display:flex;align-items:center;gap:20px;min-height:74px}
+.logo{display:inline-flex;flex-shrink:0}
+.logo:hover{text-decoration:none}
+.logo-svg{width:auto}
+.nav{margin-left:auto}
+.meniu{display:flex;align-items:center;gap:2px}
+.meniu>li{position:relative;display:flex;align-items:center}
+.meniu a{display:inline-block;padding:10px 12px;font-size:15.5px;font-weight:500;color:var(--pruna);border-radius:6px}
+.meniu a:hover{text-decoration:none;background:var(--pruna-pal)}
+.meniu a.activ{box-shadow:inset 0 -2px 0 var(--auriu);border-radius:6px 6px 0 0}
+.sub-btn{display:inline-flex;align-items:center;justify-content:center;width:28px;height:36px;margin-left:-8px;border:0;background:transparent;cursor:pointer;border-radius:6px;color:var(--pruna)}
+.sub-btn:hover{background:var(--pruna-pal)}
+.sub-btn span{width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:translateY(-2px) rotate(45deg);transition:transform .2s}
+.are-sub.deschis .sub-btn span{transform:translateY(2px) rotate(225deg)}
+.sub{position:absolute;top:100%;left:0;min-width:320px;background:var(--ivoriu);border:1px solid var(--linie);border-radius:var(--r-m);padding:8px;box-shadow:var(--umbra);display:none;z-index:60}
+.are-sub.deschis .sub{display:block}
+@media (hover:hover){.are-sub:hover .sub{display:block}}
+.sub a{display:block;padding:10px 12px;font-size:15px;white-space:nowrap}
+.btn-antet{margin-left:6px}
+.burger{display:none;flex-direction:column;justify-content:center;gap:5px;width:44px;height:44px;padding:0 9px;border:1px solid var(--linie-2);border-radius:var(--r-s);background:transparent;cursor:pointer}
+.burger span{display:block;height:2px;background:var(--pruna);border-radius:1px;transition:transform .2s,opacity .2s}
+.antet.nav-deschis .burger span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.antet.nav-deschis .burger span:nth-child(2){opacity:0}
+.antet.nav-deschis .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+@container antet (max-width: 939px){
+  .bara{min-height:64px;gap:12px}
+  .logo-svg{height:36px}
+  .nav{display:none;position:absolute;left:0;right:0;top:100%;background:var(--ivoriu);border-bottom:1px solid var(--linie);padding:4px 24px 20px;max-height:calc(100vh - 64px);overflow:auto;box-shadow:var(--umbra)}
+  .antet.nav-deschis .nav{display:block}
+  .meniu{flex-direction:column;align-items:stretch;gap:0}
+  .meniu>li{flex-direction:column;align-items:stretch;border-bottom:1px solid var(--linie)}
+  .meniu a{padding:14px 0;font-size:17px;border-radius:0}
+  .meniu a:hover{background:transparent}
+  .sub{position:static;display:block;border:0;box-shadow:none;padding:0 0 10px 16px;min-width:0;background:transparent}
+  .sub a{padding:9px 0;font-size:15.5px;white-space:normal;color:var(--text)}
+  .sub-btn{display:none}
+  .btn-antet{margin-left:auto;min-height:42px;padding:8px 16px;font-size:15px}
+  .burger{display:inline-flex}
+}
+
+/* Pagina */
+main{container-type:inline-size;container-name:pagina}
+.sec{padding:64px 0}
+.sec-cap{max-width:720px;margin-bottom:36px}
+.sec-cap h2,.nisa h2,.schimbare h2{font-size:clamp(26px, 1.4vw + 16px, 34px)}
+.sec-text{margin-top:18px;font-size:18px;color:var(--text2)}
+.h-mic{font-size:22px}
+.nota{margin-top:24px;font-size:14px;color:var(--text2)}
+.link-sageata{display:inline-block;margin-top:24px;font-weight:600;text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--auriu);text-decoration-thickness:2px}
+@container pagina (min-width: 860px){.sec{padding:88px 0}}
+
+/* Prima secțiune: prună cu lumină și granulație, text în stânga, fotografia în cadru rotund cu inel auriu, ca sigiliul */
+.hero{position:relative;background:var(--pruna);color:var(--ivoriu);overflow:hidden;isolation:isolate}
+.hero::before,.oferta::before{content:"";position:absolute;inset:0;z-index:-2;background:radial-gradient(1100px 700px at 10% -10%, rgba(122,58,107,.8), transparent 60%),radial-gradient(900px 600px at 100% 110%, rgba(40,10,34,.9), transparent 55%)}
+.hero::after,.oferta::after{content:"";position:absolute;inset:0;z-index:-1;background-image:var(--granulatie);opacity:.13;pointer-events:none}
+.hero-grid{display:grid;gap:44px;padding-top:56px;padding-bottom:48px}
+.hero h1{color:var(--ivoriu);font-size:clamp(32px, 2.4vw + 18px, 46px);letter-spacing:-.015em;line-height:1.1}
+.hero .lead{margin-top:20px;font-size:19px;line-height:1.5;color:var(--ivoriu-85);max-width:50ch}
+.butoane{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.hero-foto{display:flex;justify-content:center;padding:10px}
+.foto-loc{position:relative;width:min(100%, 300px);aspect-ratio:1;border-radius:50%;overflow:hidden;background:#2A0D24;box-shadow:0 0 0 8px var(--auriu),0 40px 70px -30px rgba(10,2,8,.85)}
+.foto-loc::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 50% at 25% 15%, rgba(140,80,125,.6), transparent 70%)}
+.foto-loc .h{position:absolute;border-radius:4px;box-shadow:0 24px 40px -18px rgba(10,2,8,.6)}
+.foto-loc .h1{left:12%;top:20%;width:60%;height:66%;transform:rotate(-7deg);background:#EFE3D3}
+.foto-loc .h2{left:24%;top:26%;width:58%;height:62%;transform:rotate(3deg);background:#F8F1E7}
+.foto-loc .h3{left:32%;top:36%;width:54%;height:56%;transform:rotate(-1.5deg);background:#FFFBF5}
+.foto-loc .lin{position:absolute;left:-10%;right:-10%;top:58%;height:3px;transform:rotate(-8deg);background:linear-gradient(90deg,transparent,var(--auriu) 25%,#F3CC78 50%,var(--auriu) 75%,transparent);box-shadow:0 0 22px rgba(227,167,47,.55)}
+.foto-loc::after{content:"";position:absolute;inset:0;background-image:var(--granulatie);opacity:.16;pointer-events:none}
+.repere{display:grid;gap:10px;border-top:1px solid var(--ivoriu-18);padding:20px 0 26px;font-size:15px;font-weight:500;color:var(--ivoriu-85)}
+@container pagina (min-width: 700px){.repere{grid-template-columns:repeat(3,1fr);gap:24px}.repere li+li{border-left:1px solid var(--ivoriu-18);padding-left:24px}}
+@container pagina (min-width: 860px){.hero-grid{grid-template-columns:1.15fr .85fr;align-items:center;gap:56px;padding-top:72px;padding-bottom:64px}.hero-foto{justify-content:flex-end;padding:12px 12px 12px 0}.foto-loc{width:min(100%, 440px)}}
+
+/* Pentru cine lucrăm: patru carduri */
+.cine{padding-top:56px;padding-bottom:40px}
+.cine-grid{display:grid;gap:16px;margin-top:24px}
+.cine-grid .card{padding:24px 22px}
+.cine-grid h3{font-size:18px}
+.cine-grid p{margin-top:8px;font-size:15.5px;color:var(--text2)}
+@container pagina (min-width: 560px){.cine-grid{grid-template-columns:1fr 1fr}}
+@container pagina (min-width: 960px){.cine{padding-bottom:56px}.cine-grid{grid-template-columns:repeat(4,1fr);gap:20px}}
+
+/* Serviciile: carduri cu sigiliu numerotat, primul serviciu pe două coloane, cardul de ofertă la final */
+.serv-grid{display:grid;gap:16px}
+.serv-card{display:flex;flex-direction:column;gap:14px;min-height:200px}
+.serv-card h3{font-size:20px;margin-top:4px}
+.serv-card h3 a{font-weight:600}
+.serv-card h3 a:hover{text-decoration:none;color:var(--pruna-inchis)}
+.serv-card p{flex:1;font-size:15.5px;color:var(--text2)}
+.serv-card .mai{font-weight:600;font-size:15px;color:var(--pruna);text-decoration:underline;text-decoration-color:var(--auriu);text-decoration-thickness:2px;text-underline-offset:4px}
+.sec.crem .card.card-cta,.card-cta{background:radial-gradient(420px 280px at 100% 0%, rgba(122,58,107,.75), transparent 70%) var(--pruna);border-color:var(--pruna);color:var(--ivoriu)}
+.card-cta h3{color:var(--ivoriu);font-size:22px}
+.card-cta p{color:var(--ivoriu-70)}
+.card-cta .btn{align-self:flex-start;margin-top:auto}
+@container pagina (min-width: 600px){.serv-grid{grid-template-columns:1fr 1fr}}
+@container pagina (min-width: 960px){.serv-grid{grid-template-columns:repeat(3,1fr);gap:20px}.serv-card.lat{grid-column:span 2}.serv-card.lat h3{font-size:24px}.serv-card.lat p{font-size:17px;max-width:52ch}}
+
+/* Liste cu liniuță aurie */
+.bife li{position:relative;padding:14px 0 14px 32px;border-top:1px solid var(--linie-2);font-size:16.5px;font-weight:500}
+.bife li:last-child{border-bottom:1px solid var(--linie-2)}
+.bife li::before{content:"";position:absolute;left:0;top:1.45em;width:16px;height:3px;border-radius:2px;background:var(--auriu)}
+.card-lista{padding:10px 28px}
+.card-lista .bife li:first-child{border-top:0}
+.card-lista .bife li:last-child{border-bottom:0}
+
+/* Nișa: magazine online */
+.nisa-grid{display:grid;gap:36px}
+.nisa h2{margin-top:16px}
+.nisa p{margin-top:16px;font-size:17px;color:var(--text2)}
+.nisa .btn{margin-top:28px}
+@container pagina (min-width: 860px){.nisa-grid{grid-template-columns:1fr 1fr;gap:64px;align-items:center}}
+
+/* Cum lucrăm: patru carduri cu sigiliu și banda cu promisiuni */
+.pasi{display:grid;gap:16px}
+.pasi .card{display:flex;flex-direction:column;gap:14px}
+.pasi h3{font-size:19px;margin-top:4px}
+.pasi p{font-size:15.5px;color:var(--text2)}
+@container pagina (min-width: 600px){.pasi{grid-template-columns:1fr 1fr}}
+@container pagina (min-width: 960px){.pasi{grid-template-columns:repeat(4,1fr);gap:20px}}
+.promisiuni{margin-top:40px;background:var(--pruna-inchis);color:var(--ivoriu);border-radius:var(--r-m);padding:36px 28px;overflow:hidden}
+.promisiuni.pattern::before{background-size:176px 176px;background-position:0 0,88px 88px}
+.promisiuni h3{color:var(--ivoriu);font-size:22px}
+.promisiuni h3::after{content:"";display:block;width:48px;height:6px;border-radius:3px;background:var(--auriu);margin-top:14px}
+.promisiuni ul{display:grid;gap:24px;margin-top:28px}
+.promisiuni strong{display:block;font-weight:600;font-size:17px;color:var(--ivoriu)}
+.promisiuni p{margin-top:6px;font-size:15.5px;color:var(--ivoriu-70)}
+@container pagina (min-width: 800px){.promisiuni{padding:44px 48px}.promisiuni ul{grid-template-columns:repeat(3,1fr);gap:40px}}
+
+/* Tarife: trei niveluri, cel recomandat pe prună */
+.niveluri{display:grid;gap:24px}
+.nivel{position:relative;display:flex;flex-direction:column;border:1px solid var(--linie-2);border-radius:var(--r-m);padding:32px 28px;background:var(--crem)}
+.nivel.rec{background:radial-gradient(420px 320px at 100% 0%, rgba(122,58,107,.7), transparent 70%) var(--pruna);border-color:var(--pruna);color:var(--ivoriu)}
+.nivel .pastila{position:absolute;top:-14px;left:28px;z-index:1}
+.nivel h3{font-size:22px}
+.pret{margin-top:14px;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.pret .de-la{font-size:15px;color:var(--text2)}
+.pret .suma{font-size:40px;font-weight:600;color:var(--pruna);letter-spacing:-.02em;line-height:1}
+.pret .luna{font-size:15px;color:var(--text2)}
+.pentru{margin-top:12px;font-size:15.5px;color:var(--text2)}
+.nivel .bife{margin-top:18px;flex:1}
+.nivel .bife li{padding:9px 0 9px 26px;font-size:15px;font-weight:400;border:0}
+.nivel .bife li::before{top:1.2em;width:12px}
+.nivel .btn{margin-top:24px;width:100%}
+.nivel.rec h3,.nivel.rec .pret .suma,.nivel.rec .bife li{color:var(--ivoriu)}
+.nivel.rec .de-la,.nivel.rec .luna,.nivel.rec .pentru{color:var(--ivoriu-70)}
+@container pagina (min-width: 900px){.niveluri{grid-template-columns:repeat(3,1fr);align-items:stretch}.pentru{min-height:3em}}
+
+/* Schimbare contabil: bandă */
+.schimbare{padding:56px 0}
+.schimbare-grid{display:grid;gap:24px}
+.schimbare p{margin-top:12px;font-size:17px;color:var(--text2);max-width:60ch}
+@container pagina (min-width: 860px){.schimbare{padding:64px 0}.schimbare-grid{grid-template-columns:1fr auto;align-items:center;gap:48px}}
+
+/* Despre: text și panou cu emblema */
+.despre-grid{display:grid;gap:40px}
+.despre .sec-cap{margin-bottom:24px}
+.despre p+p{margin-top:16px}
+.despre-panou{padding:36px 32px}
+.despre-panou dl{margin-top:28px;display:grid;gap:18px}
+.despre-panou dt{font-weight:600;color:var(--pruna);font-size:17px}
+.despre-panou dd{margin-top:2px;font-size:15px;color:var(--text2)}
+@container pagina (min-width: 860px){.despre-grid{grid-template-columns:1.2fr .8fr;gap:64px;align-items:start}}
+
+/* Termenele lunii și articolele */
+.termene-grid{display:grid;gap:32px}
+.termene-card{padding:32px 28px}
+.termene-card h2,.articole h2{font-size:26px}
+.termene-card h2{margin-top:14px}
+.termene-card dl{margin-top:22px}
+.termene-card dl div{padding:14px 0;border-top:1px solid var(--linie-2)}
+.termene-card dt{font-weight:600;color:var(--pruna);font-size:17px}
+.termene-card dd{margin-top:4px;font-size:15.5px;color:var(--text2)}
+.articole-grid{display:grid;gap:16px;margin-top:20px}
+.art-card{display:flex;flex-direction:column;gap:12px}
+.art-card .pastila{align-self:flex-start}
+.art-card h3{font-size:19px;line-height:1.3}
+.art-card h3 a{font-weight:600}
+.art-card h3 a:hover{text-decoration:none;color:var(--pruna-inchis)}
+.art-card p{font-size:15.5px;color:var(--text2)}
+@container pagina (min-width: 860px){.termene-grid{grid-template-columns:.9fr 1.1fr;gap:56px;align-items:start}}
+
+/* Întrebări frecvente */
+.faq .sec-cap{margin-bottom:16px}
+.faq-list{max-width:800px}
+.faq-list details{border-top:1px solid var(--linie)}
+.faq-list details:last-child{border-bottom:1px solid var(--linie)}
+.faq-list summary{list-style:none;cursor:pointer;position:relative;padding:18px 40px 18px 0;font-weight:600;font-size:18px;color:var(--pruna)}
+.faq-list summary::-webkit-details-marker{display:none}
+.faq-list summary::after{content:"";position:absolute;right:6px;top:50%;width:10px;height:10px;border-right:2px solid var(--pruna);border-bottom:2px solid var(--pruna);transform:translateY(-70%) rotate(45deg);transition:transform .2s}
+.faq-list details[open] summary::after{transform:translateY(-30%) rotate(225deg)}
+.faq-list details p{padding:0 0 20px;font-size:16.5px;color:var(--text2);max-width:68ch}
+
+/* Cere o ofertă: prună, formular pe ivoriu */
+.oferta{position:relative;background:var(--pruna);color:var(--ivoriu);overflow:hidden;isolation:isolate}
+.oferta-grid{display:grid;gap:40px}
+.oferta-text h2{color:var(--ivoriu);font-size:clamp(28px, 1.6vw + 16px, 36px)}
+.oferta-text p{margin-top:16px;font-size:18px;color:var(--ivoriu-85);max-width:40ch}
+.contact-list{margin-top:32px;display:grid;gap:12px;font-size:18px;font-weight:600}
+.contact-list a{color:var(--ivoriu);display:inline-flex;align-items:center;gap:10px}
+.formular{background:var(--ivoriu);color:var(--text);border-radius:var(--r-m);padding:28px 24px;display:grid;gap:18px;box-shadow:var(--umbra)}
+.camp label{display:block;font-weight:500;font-size:15px;color:var(--pruna);margin-bottom:6px}
+.camp .opt{font-weight:400;color:var(--text2)}
+.camp input,.camp select,.camp textarea{width:100%;font:inherit;font-size:16px;color:var(--text);background:#FFFDF9;border:1px solid var(--linie-2);border-radius:var(--r-s);padding:12px 14px;min-height:48px}
+.camp textarea{min-height:120px;resize:vertical}
+.camp input:focus,.camp select:focus,.camp textarea:focus{outline:none;border-color:var(--pruna);box-shadow:0 0 0 3px rgba(91,31,78,.16)}
+.bifa{display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:start}
+.bifa input{width:20px;height:20px;min-height:0;margin:2px 0 0;accent-color:var(--pruna)}
+.bifa label{font-weight:400;font-size:14.5px;color:var(--text2);margin:0}
+.formular .btn{width:100%}
+@container pagina (min-width: 600px){.formular{grid-template-columns:1fr 1fr;padding:36px 32px}.camp-lat{grid-column:1/-1}.formular .btn{width:auto;justify-self:start}}
+@container pagina (min-width: 960px){.oferta-grid{grid-template-columns:.9fr 1.1fr;gap:64px;align-items:start}}
+
+/* Pagina 404 */
+.p404{padding:80px 0}
+.p404-grid{display:grid;gap:28px;justify-items:start;max-width:640px}
+.p404 h1{font-size:clamp(28px, 2vw + 16px, 40px)}
+.p404 p{margin-top:14px;font-size:17px;color:var(--text2)}
+
+/* Subsolul: prună închisă cu pattern-ul emblemei */
+.subsol{container-type:inline-size;container-name:subsol;background:var(--pruna-inchis);color:var(--ivoriu-70);padding:56px 0 28px;font-size:15px;overflow:hidden}
+.subsol-grid{display:grid;gap:36px}
+.subsol h2{font-size:13.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ivoriu);margin-bottom:14px}
+.subsol a{color:var(--ivoriu-85);font-weight:400}
+.subsol li+li{margin-top:9px}
+.col-brand p{margin-top:16px}
+.subsol-jos{margin-top:48px;padding-top:22px;border-top:1px solid var(--ivoriu-18);display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-between;font-size:13.5px}
+.subsol-jos ul{display:flex;flex-wrap:wrap;gap:8px 20px}
+.subsol-jos li+li{margin-top:0}
+@container subsol (min-width: 600px){.subsol-grid{grid-template-columns:1fr 1fr}}
+@container subsol (min-width: 960px){.subsol-grid{grid-template-columns:1.3fr 1fr 1fr 1fr;gap:48px}}
+
+/* Butonul flotant WhatsApp */
+.fab{position:fixed;right:20px;bottom:20px;z-index:40;width:56px;height:56px;border-radius:50%;background:var(--pruna);color:var(--ivoriu);display:flex;align-items:center;justify-content:center;box-shadow:0 14px 28px -10px rgba(46,21,41,.6);transition:transform .15s,background-color .2s}
+.fab:hover{background:var(--pruna-inchis);transform:translateY(-2px);text-decoration:none}
+html.meniu-deschis .fab{display:none}
