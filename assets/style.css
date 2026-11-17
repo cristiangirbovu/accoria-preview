@@ -39,9 +39,9 @@ ul,ol{margin:0;padding:0;list-style:none}
 .btn-auriu:hover{background:var(--auriu-inchis)}
 .btn-pruna{background:var(--pruna);color:var(--ivoriu)}
 .btn-pruna:hover{background:var(--pruna-inchis)}
-.btn-contur-ivoriu{border-color:var(--ivoriu-70);color:var(--ivoriu)}
+.btn-contur-ivoriu{border-color:var(--ivoriu-70);color:var(--ivoriu);background:transparent}
 .btn-contur-ivoriu:hover{border-color:var(--ivoriu);background:rgba(255,251,245,.08)}
-.btn-contur-pruna{border-color:var(--pruna);color:var(--pruna)}
+.btn-contur-pruna{border-color:var(--pruna);color:var(--pruna);background:transparent}
 .btn-contur-pruna:hover{background:var(--pruna-pal)}
 .pastila{display:inline-block;background:var(--auriu);color:var(--text);font-size:12.5px;font-weight:600;letter-spacing:.02em;line-height:1.2;padding:6px 12px;border-radius:999px}
 .linie{display:block;width:64px;height:8px;border-radius:4px;background:var(--auriu);margin-top:18px}
@@ -400,6 +400,8 @@ html.meniu-deschis .fab{display:none}
 .cookie-categorie b{display:block;color:var(--text);font-weight:600;margin-bottom:2px}
 .cookie-nota{margin-top:14px;font-size:14px;color:var(--text2)}
 html.meniu-deschis .cookie-banner{display:none}
+/* Bannerul este fixat față de fereastră, deci aici regula ține de lățimea ferestrei: pe telefon, mai compact */
+@media (max-width: 560px){.cookie-banner{left:10px;right:10px;bottom:10px;padding:16px 18px}.cookie-titlu{font-size:16px}.cookie-text{font-size:13px;line-height:1.45;margin-top:6px}.cookie-butoane{margin-top:12px;gap:8px 10px}.cookie-butoane .btn{min-height:42px;padding:8px 16px}}
 
 /* Programarea unei discuții cu Adriana Simion */
 .programare-card{margin-top:32px;padding:22px 24px;border:1px solid var(--ivoriu-18);border-radius:var(--r-m);background:rgba(255,251,245,.06);max-width:420px}
@@ -412,4 +414,6 @@ html.meniu-deschis .cookie-banner{display:none}
 .programare-grid p{margin-top:12px;font-size:17px;color:var(--text2);max-width:60ch}
 .programare-butoane{display:flex;flex-wrap:wrap;gap:12px}
 .card-persoana .btn{margin-top:18px}
+.despre-actiuni{display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px;margin-top:28px}
+.despre-actiuni .link-sageata{margin-top:0}
 @container pagina (min-width: 860px){.sec.programare{padding:64px 0}.programare-grid{grid-template-columns:1fr auto;align-items:center;gap:48px}}

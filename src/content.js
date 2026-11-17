@@ -59,7 +59,8 @@ const ACASA = {
     h1: 'Contabilitate și consultanță fiscală pentru SRL-uri din București și Ilfov',
     lead: 'Evidență la zi, declarații depuse la termen și răspunsuri clare înainte să iei o decizie.',
     btnPrimar: { text: 'Cere o ofertă', href: '#oferta' },
-    btnSecundar: { text: 'Vezi tarifele', href: '#tarife' },
+    // Al doilea buton din prima secțiune duce la programare (cererea clientei din 17.11.2026); tarifele rămân în meniu
+    btnSecundar: { text: 'Stabilește o întâlnire', programare: true },
     repere: ['Membru CECCAR', 'Răspuns în scris în 2 zile lucrătoare', 'Un contabil dedicat firmei tale'],
   },
   cine: {

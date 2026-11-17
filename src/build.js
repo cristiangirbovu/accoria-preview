@@ -225,7 +225,7 @@ function hero(h, rel) {
 <p class="lead">${esc(h.lead)}</p>
 <div class="butoane">
 <a class="btn btn-auriu" href="${h.btnPrimar.href}">${esc(h.btnPrimar.text)}</a>
-<a class="btn btn-contur-ivoriu" href="${h.btnSecundar.href || link(rel, h.btnSecundar.slug)}">${esc(h.btnSecundar.text)}</a>
+<a class="btn btn-contur-ivoriu" ${h.btnSecundar.programare ? programareLink(rel) : `href="${h.btnSecundar.href || link(rel, h.btnSecundar.slug)}"`}>${esc(h.btnSecundar.text)}</a>
 </div>
 </div>
 <div class="hero-foto">
@@ -263,7 +263,7 @@ function acasaPage(rel) {
 <div><a class="btn btn-pruna" href="${link(rel, A.schimbare.btn.slug)}">${esc(A.schimbare.btn.text)}</a></div>
 </div>`);
   const despre = sec('despre', `<div class="despre-grid">
-<div>${titlu(A.despre.titlu)}${proza(A.despre.paragrafe)}<a class="link-sageata" href="${link(rel, A.despre.btn.slug)}">${esc(A.despre.btn.text)}</a></div>
+<div>${titlu(A.despre.titlu)}${proza(A.despre.paragrafe)}<div class="despre-actiuni"><a class="btn btn-pruna" ${programareLink(rel)}>${esc(PROGRAMARE.btn)}</a><a class="link-sageata" href="${link(rel, A.despre.btn.slug)}">${esc(A.despre.btn.text)}</a></div></div>
 ${panouFapte(A.despre.fapte)}
 </div>`);
   const termene = sec('termene crem', `<div class="termene-grid">
