@@ -2,7 +2,7 @@
 // Scrie toate paginile din src/content.js și src/pagini/*, plus 404.html, robots.txt, sitemap.xml, llms.txt și pattern-ul cu emblema.
 const fs = require('fs');
 const path = require('path');
-const { SITE, SERVICII, NAV, ACASA, SUBSOL, PAGINA404 } = require('./content.js');
+const { SITE, PROGRAMARE, SERVICII, NAV, ACASA, SUBSOL, PAGINA404 } = require('./content.js');
 const SERV = require('./pagini/servicii.js');
 const ALTE = require('./pagini/alte.js');
 const BLOG = require('./pagini/blog.js');
@@ -53,7 +53,7 @@ const ORGANIZATIA = {
   '@context': 'https://schema.org', '@type': 'AccountingService', '@id': `${SITE_URL}/#organizatie`,
   name: SITE.nume, legalName: SITE.firma, url: `${SITE_URL}/`, telephone: SITE.telefonTel, email: SITE.email,
   logo: `${SITE_URL}/assets/favicon-512.png`, image: `${SITE_URL}/assets/og-accoria.png`,
-  address: { '@type': 'PostalAddress', addressLocality: 'Popești-Leordeni', addressRegion: 'Ilfov', addressCountry: 'RO' },
+  address: { '@type': 'PostalAddress', streetAddress: SITE.adresa, postalCode: SITE.codPostal, addressLocality: 'Popești-Leordeni', addressRegion: 'Ilfov', addressCountry: 'RO' },
   areaServed: ['București', 'Ilfov'], priceRange: 'de la 450 lei pe lună',
 };
 const crumbsLd = (items) => ({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: items.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c.nume, item: c.url })) });
@@ -122,7 +122,7 @@ function footer(rel) {
 ${col('Servicii', [...SERVICII, { eticheta: 'Schimbare contabil', slug: 'schimbare-contabil' }])}
 ${col('Firma', SUBSOL.firma)}
 <div class="col"><h2>Contact</h2><ul>
-<li>${esc(SITE.localitate)}</li>
+<li>${esc(SITE.adresa)}<br>${esc(SITE.localitate)}</li>
 <li><a href="tel:${SITE.telefonTel}">${esc(SITE.telefon)}</a></li>
 <li><a href="https://wa.me/${SITE.whatsapp}" rel="noopener">WhatsApp</a></li>
 <li><a href="mailto:${SITE.email}">${esc(SITE.email)}</a></li>
@@ -179,6 +179,14 @@ function servCard(s, rel, { lat = false, text, numar = true } = {}) {
 }
 const legate = (slugs, rel) => `${titlu('Servicii legate')}<div class="serv-grid">${slugs.map((sl) => servCard(cardDupaSlug(sl), rel, { numar: false })).join('')}</div>`;
 
+// Programarea unei discuții cu Adriana Simion: cu adresa de pe calendarulmeu.ro se deschide calendarul într-o filă nouă;
+// fără ea, butonul duce la secțiunea de programare de pe Contact (telefon și WhatsApp).
+function programareLink(rel) {
+  const url = SITE.programare && SITE.programare.url;
+  return url ? `href="${esc(url)}" target="_blank" rel="noopener"` : `href="${link(rel, 'contact')}#programare"`;
+}
+const programareCard = (rel) => `<div class="programare-card"><h3>${esc(PROGRAMARE.scurtTitlu)}</h3><p>${esc(PROGRAMARE.scurtText)}</p><a class="btn btn-contur-ivoriu" ${programareLink(rel)}>${esc(PROGRAMARE.btn)}</a></div>`;
+
 // Formularul de ofertă (pe prună), cu titlu și text proprii pe fiecare pagină
 function oferta(rel, cta = { titlu: ACASA.oferta.titlu, text: ACASA.oferta.text }) {
   const O = ACASA.oferta;
@@ -192,6 +200,7 @@ function oferta(rel, cta = { titlu: ACASA.oferta.titlu, text: ACASA.oferta.text 
 <li><a href="https://wa.me/${SITE.whatsapp}" rel="noopener">${waIcon(20)} WhatsApp</a></li>
 <li><a href="mailto:${SITE.email}">${esc(SITE.email)}</a></li>
 </ul>
+${programareCard(rel)}
 </div>
 <form class="formular" action="#" method="post" novalidate>
 <div class="camp"><label for="f-nume">Nume și prenume</label><input id="f-nume" name="nume" type="text" autocomplete="name" required></div>
@@ -326,7 +335,8 @@ function paginaSchimbare(rel) {
 function paginaLocal(rel) {
   const L = ALTE.LOCAL;
   const cap = capPagina({ crumbs: [{ nume: 'Contabilitate în Popești-Leordeni' }], h1: L.h1, lead: L.lead }, rel);
-  const intro = sec('intro', `<div class="intro-grid"><div class="proza">${proza(L.intro)}</div><div class="card card-include"><h2>${esc(L.zone.titlu)}</h2>${bife(L.zone.puncte)}</div></div>`);
+  const biroul = `Biroul este pe ${SITE.adresa}, în Popești-Leordeni. Întâlnirile se stabilesc cu programare.`;
+  const intro = sec('intro', `<div class="intro-grid"><div class="proza">${proza([...L.intro, biroul])}</div><div class="card card-include"><h2>${esc(L.zone.titlu)}</h2>${bife(L.zone.puncte)}</div></div>`);
   const serv = sec('crem', `${titlu('Serviciile noastre')}<div class="serv-grid patru">${L.servicii.map((sl) => servCard(servDupaSlug(sl), rel, { numar: false })).join('')}</div>`);
   const intrebari = sec('faq', faq(L.faq));
   return [cap, intro, serv, intrebari, oferta(rel, L.cta)].join('\n');
@@ -338,7 +348,7 @@ function paginaDespre(rel) {
   const poveste = sec('', `<div class="despre-grid"><div class="proza">${proza(D.poveste)}</div>${panouFapte(D.fapte)}</div>`);
   const princ = sec('crem', `${titlu(D.principii.titlu)}${carduri(D.principii.carduri, 'grid-4')}`);
   const prom = sec('', `<div class="promisiuni pattern"><h3>${esc(ACASA.proces.promisiuniTitlu)}</h3><ul>${ACASA.proces.promisiuni.map((p) => `<li><strong>${esc(p.nume)}</strong><p>${esc(p.text)}</p></li>`).join('')}</ul></div>`);
-  const cond = sec('crem', `<div class="intro-grid"><div>${titlu(D.conducere.titlu)}<p class="proza-p">${esc(D.conducere.text)}</p></div><div class="card card-persoana"><span class="sigiliu-mare" aria-hidden="true">${EMBLEMA}</span><h3>${esc(D.conducere.nume)}</h3><p>${esc(D.conducere.rol)}</p></div></div>`);
+  const cond = sec('crem', `<div class="intro-grid"><div>${titlu(D.conducere.titlu)}<p class="proza-p">${esc(D.conducere.text)}</p></div><div class="card card-persoana"><span class="sigiliu-mare" aria-hidden="true">${EMBLEMA}</span><h3>${esc(D.conducere.nume)}</h3><p>${esc(D.conducere.rol)}</p><a class="btn btn-pruna" ${programareLink(rel)}>${esc(PROGRAMARE.btn)}</a></div></div>`);
   return [cap, poveste, princ, prom, cond, oferta(rel, D.cta)].join('\n');
 }
 
@@ -354,7 +364,7 @@ function paginaContact(rel) {
 <li><a href="tel:${SITE.telefonTel}">${esc(SITE.telefon)}</a></li>
 <li><a href="https://wa.me/${SITE.whatsapp}" rel="noopener">${waIcon(20)} WhatsApp</a></li>
 <li><a href="mailto:${SITE.email}">${esc(SITE.email)}</a></li>
-<li>${esc(SITE.localitate)}</li>
+<li>${esc(SITE.adresa)}, ${esc(SITE.localitate)}</li>
 </ul>
 <p class="sec-text">${esc(C.canale.text)}</p>
 <h2 class="h-mic sus">${esc(C.dupa.titlu)}</h2>
@@ -373,9 +383,15 @@ ${pasi(C.dupa.pasi, 'lista')}
 <div class="camp camp-lat"><button class="btn btn-auriu" type="submit">${esc(O.btn)}</button></div>
 </form>
 </div>`);
-  const harta = sec('crem', `${titlu('Unde suntem', SITE.localitate)}<div class="harta-acord" data-harta-q="${esc(C.harta.q)}" data-harta-titlu="${esc(C.harta.titlu)}"></div>`);
-  const intrebari = sec('faq', faq(C.faq));
-  return [cap, grid, harta, intrebari].join('\n');
+  // Programarea: cu adresa de pe calendarulmeu.ro, un buton către calendar; fără ea, telefon și WhatsApp
+  const url = SITE.programare && SITE.programare.url;
+  const butoane = url
+    ? `<a class="btn btn-pruna" href="${esc(url)}" target="_blank" rel="noopener">${esc(PROGRAMARE.btn)}</a>`
+    : `<a class="btn btn-pruna" href="tel:${SITE.telefonTel}">Sună: ${esc(SITE.telefon)}</a><a class="btn btn-contur-pruna" href="https://wa.me/${SITE.whatsapp}" rel="noopener">${waIcon(20)} Scrie pe WhatsApp</a>`;
+  const programare = sec('crem programare', `<div class="programare-grid"><div><h2>${esc(PROGRAMARE.titlu)}</h2><p>${esc(url ? PROGRAMARE.text : PROGRAMARE.textFaraCalendar)}</p></div><div class="programare-butoane">${butoane}</div></div>`, 'programare');
+  const harta = sec('', `${titlu('Unde suntem', `${SITE.adresa}, ${SITE.localitate}`)}<div class="harta-acord" data-harta-q="${esc(C.harta.q)}" data-harta-titlu="${esc(C.harta.titlu)}"></div>`);
+  const intrebari = sec('crem faq', faq(C.faq));
+  return [cap, grid, programare, harta, intrebari].join('\n');
 }
 
 function paginaMultumim(rel) {
@@ -392,7 +408,8 @@ function paginaBlog(rel) {
 }
 
 function blocuri(corp) {
-  return corp.map((b) => {
+  // blocurile cu „conditie: programare” apar doar când există adresa paginii de programări
+  return corp.filter((b) => !b.conditie || (b.conditie === 'programare' && SITE.programare && SITE.programare.url)).map((b) => {
     if (b.t === 'h2') return `<h2>${esc(b.s)}</h2>`;
     if (b.t === 'p') return `<p>${esc(b.s)}</p>`;
     if (b.t === 'ul') return `<ul>${b.s.map((i) => `<li>${esc(i)}</li>`).join('')}</ul>`;

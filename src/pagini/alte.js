@@ -125,7 +125,7 @@ const DESPRE = {
   conducere: {
     titlu: 'Cine conduce firma',
     nume: 'Adriana Simion',
-    rol: 'Administrator',
+    rol: 'Expert-contabil',
     text: 'Adriana Simion conduce firma și răspunde personal de fiecare client. Membră CECCAR, cu experiență de antreprenor și de contabil, vorbește pe limba ta, nu doar în limbaj de specialitate.',
   },
   fapte: [
@@ -154,7 +154,7 @@ const CONTACT = {
       { nume: 'Stabilim pașii', text: 'Preluarea documentelor, data de început și cine este contabilul tău dedicat.' },
     ],
   },
-  harta: { q: 'Popești-Leordeni, Ilfov', titlu: 'Harta: Popești-Leordeni' },
+  harta: { q: 'Strada Drumul Fermei 69E, Popești-Leordeni, Ilfov', titlu: 'Harta: biroul Accoria, Popești-Leordeni' },
   faq: [
     { q: 'În cât timp răspundeți?', a: 'În cel mult 2 zile lucrătoare, în scris. Dacă e urgent, sună-ne.' },
     { q: 'Pot veni la birou?', a: 'Da, cu programare, ca să te aștepte cineva și să ai timpul necesar.' },

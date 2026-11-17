@@ -7,12 +7,30 @@ const SITE = {
   firma: 'SMART TEAM CONT S.R.L.',
   cui: 'RO34929542',
   regcom: 'J23/3013/2015',
-  telefon: '0728 250 064',
-  telefonTel: '+40728250064',
-  whatsapp: '40728250064',
+  // Telefonul Accoria (decis 30.10.2026); 0728 250 064 rămâne al brandului Smart Team Cont
+  telefon: '0744 522 577',
+  telefonTel: '+40744522577',
+  whatsapp: '40744522577',
   email: 'contact@accoria.ro',
+  // Adresa publică = cea din contract și de pe fișa Google (decizia 3 din capitolul 12 al studiului)
+  adresa: 'Str. Drumul Fermei nr. 69E, et. 2, ap. 18',
   localitate: 'Popești-Leordeni, jud. Ilfov',
+  codPostal: '077160',
   domeniu: 'https://accoria.ro',
+  // Programarea online: adresa paginii de programări de pe calendarulmeu.ro, de completat după crearea contului
+  // (exemplu: 'https://accoria.calendarulmeu.ro/'). Cât este null, butonul duce la secțiunea de programare de pe Contact.
+  programare: { url: null },
+};
+
+// Programarea unei discuții cu Adriana Simion: păstrată din versiunea anterioară a site-ului, la cererea clientei.
+// calendarulmeu.ro nu permite înglobarea calendarului în pagină, deci programarea se deschide într-o filă nouă.
+const PROGRAMARE = {
+  titlu: 'Vorbește cu Adriana Simion',
+  text: 'Preferi o discuție directă? Alege o zi și o oră pentru o ședință online de 30 de minute cu Adriana Simion.',
+  textFaraCalendar: 'Preferi o discuție directă? Stabilim împreună o zi și o oră pentru o ședință online de 30 de minute cu Adriana Simion.',
+  btn: 'Stabilește o întâlnire',
+  scurtTitlu: 'Preferi o discuție directă?',
+  scurtText: '30 de minute, online, cu Adriana Simion.',
 };
 
 // Meniul principal. Serviciile apar în meniul derulant și în subsol, în ordinea priorităților din chestionar.
@@ -176,4 +194,4 @@ const SUBSOL = {
   ],
 };
 
-module.exports = { SITE, SERVICII, NAV, ACASA, SUBSOL, PAGINA404 };
+module.exports = { SITE, PROGRAMARE, SERVICII, NAV, ACASA, SUBSOL, PAGINA404 };

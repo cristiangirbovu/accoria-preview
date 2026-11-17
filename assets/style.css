@@ -400,3 +400,16 @@ html.meniu-deschis .fab{display:none}
 .cookie-categorie b{display:block;color:var(--text);font-weight:600;margin-bottom:2px}
 .cookie-nota{margin-top:14px;font-size:14px;color:var(--text2)}
 html.meniu-deschis .cookie-banner{display:none}
+
+/* Programarea unei discuții cu Adriana Simion */
+.programare-card{margin-top:32px;padding:22px 24px;border:1px solid var(--ivoriu-18);border-radius:var(--r-m);background:rgba(255,251,245,.06);max-width:420px}
+.programare-card h3{color:var(--ivoriu);font-size:19px}
+.oferta-text .programare-card p{margin-top:6px;font-size:15.5px;color:var(--ivoriu-70)}
+.programare-card .btn{margin-top:16px}
+.sec.programare{padding:56px 0}
+.programare-grid{display:grid;gap:24px}
+.programare-grid h2{font-size:clamp(26px, 1.4vw + 16px, 34px)}
+.programare-grid p{margin-top:12px;font-size:17px;color:var(--text2);max-width:60ch}
+.programare-butoane{display:flex;flex-wrap:wrap;gap:12px}
+.card-persoana .btn{margin-top:18px}
+@container pagina (min-width: 860px){.sec.programare{padding:64px 0}.programare-grid{grid-template-columns:1fr auto;align-items:center;gap:48px}}
