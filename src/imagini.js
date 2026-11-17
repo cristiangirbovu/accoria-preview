@@ -15,17 +15,17 @@ const IMAGINI = {
   birou: { tip: 'birou', raport: '3x2', alt: 'Biroul Accoria din Popești-Leordeni' },
 
   // Imagini generate: paginile de servicii
-  'serviciu-contabilitate-srl': { tip: 'generata', raport: '4x3', alt: 'Mâini care așază facturi într-un biblioraft, pe un birou cu laptop și calculator' },
+  'serviciu-contabilitate-srl': { tip: 'generata', raport: '4x3', alt: 'Mâini care așază un document într-un biblioraft, pe un birou cu laptop și calculator' },
   'serviciu-contabilitate-magazin-online': { tip: 'generata', raport: '4x3', alt: 'Colete pregătite pentru livrare pe o masă de ambalat, lângă un laptop' },
-  'serviciu-infiintare-firma': { tip: 'generata', raport: '4x3', alt: 'Stilou și ștampilă lângă actele de înființare ale unei firme' },
+  'serviciu-infiintare-firma': { tip: 'generata', raport: '4x3', alt: 'Mână cu stilou deasupra actelor de semnat, lângă o ștampilă și un set de chei' },
   'serviciu-modificari-registrul-comertului': { tip: 'generata', raport: '4x3', alt: 'Mâini care așază un document într-un dosar cu separatoare' },
   'serviciu-consultanta-fiscala': { tip: 'generata', raport: '4x3', alt: 'Două persoane discută la o masă, cu grafice tipărite în față' },
-  'serviciu-analiza-cash-flow': { tip: 'generata', raport: '4x3', alt: 'Grafic tipărit cu încasări și plăți, urmărit cu stiloul' },
+  'serviciu-analiza-cash-flow': { tip: 'generata', raport: '4x3', alt: 'Mână care trasează un grafic pe hârtie, lângă o tabletă și un calculator' },
   'serviciu-salarizare': { tip: 'generata', raport: '4x3', alt: 'Plicuri și un planificator de birou, pregătite pentru ziua de salarii' },
 
   // Imagini generate: copertele articolelor
   'articol-saf-t-pentru-firmele-mici': { tip: 'generata', raport: '16x9', alt: 'Laptop și dosare ordonate pe un birou, cu o listă de verificare alături' },
-  'articol-e-factura-magazin-online-persoane-fizice': { tip: 'generata', raport: '16x9', alt: 'Colet deschis, cu factura împăturită deasupra produsului' },
+  'articol-e-factura-magazin-online-persoane-fizice': { tip: 'generata', raport: '16x9', alt: 'Mâini care țin factura tipărită deasupra unui colet deschis' },
 
   // Imagini generate: secțiunea pentru antreprenori
   'academia-ghid': { tip: 'generata', raport: '4x3', alt: 'Ghid tipărit, cu copertă prună, pe un birou' },
