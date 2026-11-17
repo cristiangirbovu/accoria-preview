@@ -55,7 +55,7 @@ ul,ol{margin:0;padding:0;list-style:none}
 .card{position:relative;background:var(--crem);border:1px solid transparent;border-radius:var(--r-m);padding:28px 26px;transition:transform .2s,box-shadow .2s,border-color .2s}
 .sec.crem{background:var(--crem)}
 .sec.crem .card{background:var(--ivoriu);border-color:var(--linie)}
-.serv-card:hover,.art-card:hover,.cine-grid .card:hover,.pasi .card:hover{transform:translateY(-3px);box-shadow:var(--umbra-card)}
+.serv-card:hover,.art-card:hover,.cine-grid .card:hover,.pasi .card:hover,.treapta:hover,.card-leg:hover{transform:translateY(-3px);box-shadow:var(--umbra-card)}
 .acopera::after{content:"";position:absolute;inset:0;border-radius:inherit}
 
 /* Antetul: logo pe ivoriu, meniu în prună, un singur buton auriu (manual, p. 21) */
@@ -84,7 +84,7 @@ ul,ol{margin:0;padding:0;list-style:none}
 .antet.nav-deschis .burger span:nth-child(1){transform:translateY(7px) rotate(45deg)}
 .antet.nav-deschis .burger span:nth-child(2){opacity:0}
 .antet.nav-deschis .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
-@container antet (max-width: 939px){
+@container antet (max-width: 1019px){
   .bara{min-height:64px;gap:12px}
   .logo-svg{height:36px}
   .nav{display:none;position:absolute;left:0;right:0;top:100%;background:var(--ivoriu);border-bottom:1px solid var(--linie);padding:4px 24px 20px;max-height:calc(100vh - 64px);overflow:auto;box-shadow:var(--umbra)}
@@ -148,7 +148,9 @@ main{container-type:inline-size;container-name:pagina}
 .serv-card h3 a{font-weight:600}
 .serv-card h3 a:hover{text-decoration:none;color:var(--pruna-inchis)}
 .serv-card p{flex:1;font-size:15.5px;color:var(--text2)}
-.serv-card .mai{font-weight:600;font-size:15px;color:var(--pruna);text-decoration:underline;text-decoration-color:var(--auriu);text-decoration-thickness:2px;text-underline-offset:4px}
+.mai{font-weight:600;font-size:15px;color:var(--pruna);text-decoration:underline;text-decoration-color:var(--auriu);text-decoration-thickness:2px;text-underline-offset:4px}
+.card-leg .mai{display:inline-block;margin-top:14px}
+.card-leg h3 a:hover{text-decoration:none;color:var(--pruna-inchis)}
 .sec.crem .card.card-cta,.card-cta{background:radial-gradient(420px 280px at 100% 0%, rgba(122,58,107,.75), transparent 70%) var(--pruna);border-color:var(--pruna);color:var(--ivoriu)}
 .card-cta h3{color:var(--ivoriu);font-size:22px}
 .card-cta p{color:var(--ivoriu-70)}
@@ -232,8 +234,11 @@ main{container-type:inline-size;container-name:pagina}
 .termene-card dt{font-weight:600;color:var(--pruna);font-size:17px}
 .termene-card dd{margin-top:4px;font-size:15.5px;color:var(--text2)}
 .articole-grid{display:grid;gap:16px;margin-top:20px}
-.art-card{display:flex;flex-direction:column;gap:12px}
+.art-card{display:flex;flex-direction:column;padding:0;overflow:hidden}
+.art-foto .foto{border-radius:0}
+.art-corp{display:flex;flex-direction:column;gap:12px;flex:1;min-width:0;padding:26px 26px 28px}
 .art-card .pastila{align-self:flex-start}
+@container pagina (min-width: 600px){.art-card.oriz{flex-direction:row}.art-card.oriz .art-foto{position:relative;flex:0 0 36%}.art-card.oriz .art-foto .foto{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto}}
 .art-card h3{font-size:19px;line-height:1.3}
 .art-card h3 a{font-weight:600}
 .art-card h3 a:hover{text-decoration:none;color:var(--pruna-inchis)}
@@ -417,3 +422,79 @@ html.meniu-deschis .cookie-banner{display:none}
 .despre-actiuni{display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px;margin-top:28px}
 .despre-actiuni .link-sageata{margin-top:0}
 @container pagina (min-width: 860px){.sec.programare{padding:64px 0}.programare-grid{grid-template-columns:1fr auto;align-items:center;gap:48px}}
+.programare-card.cu-foto{display:grid;grid-template-columns:84px 1fr;gap:4px 18px;align-items:center;max-width:460px}
+.programare-card.cu-foto .btn{grid-column:1/-1;justify-self:start}
+.programare-grid.cu-foto .programare-foto{width:132px}
+.programare-grid .programare-foto .foto{box-shadow:var(--umbra-card)}
+@container pagina (min-width: 860px){.programare-grid.cu-foto{grid-template-columns:150px 1fr auto}.programare-grid.cu-foto .programare-foto{width:auto}}
+
+/* Imagini: fotografii reale și imagini generate, cu colțuri de 14 px. Raportul vine din clasa r-*.
+   Locurile fără fișier apar doar pe preview, ca imagini provizorii: „Poze persoane” la fotografiile reale, „Imagine” la cele generate. */
+.foto{display:block;width:100%;height:auto;object-fit:cover;border-radius:var(--r-m);background:var(--crem)}
+.r-1x1{aspect-ratio:1}
+.r-4x5{aspect-ratio:4/5}
+.r-4x3{aspect-ratio:4/3}
+.r-3x2,.r-lat{aspect-ratio:3/2}
+.r-16x9{aspect-ratio:16/9}
+@container pagina (min-width: 760px){.r-lat{aspect-ratio:21/9}}
+.foto.loc{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:10px;text-align:center;font-size:15px;font-weight:600;line-height:1.2;color:var(--pruna);background:repeating-linear-gradient(135deg, rgba(91,31,78,.07) 0 12px, rgba(91,31,78,0) 12px 24px) var(--pruna-pal);border:1.5px dashed rgba(91,31,78,.4)}
+.foto.loc svg{width:30px;height:30px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.foto.loc-generata{color:#7A5A12;background:repeating-linear-gradient(135deg, rgba(227,167,47,.16) 0 12px, rgba(227,167,47,0) 12px 24px) #FBF3E1;border-color:rgba(205,147,32,.65)}
+.foto.loc.mic{gap:4px;padding:6px;font-size:11.5px}
+.foto.loc.mic svg{width:20px;height:20px}
+.foto-lata{margin-top:40px}
+.foto-sub{margin-top:28px}
+.foto-sus{margin-bottom:28px}
+.articol-foto{margin-bottom:32px}
+
+/* Antetul paginii cu imagine: textul în stânga, imaginea în dreapta */
+.cap-grid{display:grid;gap:28px}
+.cap-foto .foto{aspect-ratio:16/9;box-shadow:0 30px 60px -32px rgba(10,2,8,.85)}
+@container pagina (min-width: 860px){.cap-grid{grid-template-columns:1.2fr .8fr;gap:56px;align-items:center}.cap-foto .foto{aspect-ratio:4/3}}
+
+/* Fotografia din cadrul rotund al primei secțiuni */
+.foto-loc.cu-foto::before,.foto-loc.cu-foto::after{content:none}
+.foto-loc.cu-foto .foto{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:0}
+
+/* Cum lucrăm, cu fotografie: imaginea în stânga, pașii pe două coloane */
+.proces-grid{display:grid;gap:20px}
+@container pagina (min-width: 960px){.proces-grid{grid-template-columns:.85fr 1.15fr;align-items:stretch}.proces-foto{position:relative;min-height:340px}.proces-foto .foto{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto}.pasi.doua{grid-template-columns:1fr 1fr}}
+
+/* Despre: portretul din card și echipa */
+.persoana-foto{width:min(100%,240px);margin-bottom:14px}
+.echipa-grid{display:grid;gap:32px}
+.echipa-grid .sec-cap{margin-bottom:24px}
+.echipa-lista li{display:flex;flex-direction:column;gap:2px;padding:16px 0;border-top:1px solid var(--linie-2)}
+.echipa-lista li:last-child{border-bottom:1px solid var(--linie-2)}
+.echipa-lista strong{font-weight:600;font-size:18px;color:var(--pruna)}
+.echipa-lista span{font-size:15.5px;color:var(--text2)}
+@container pagina (min-width: 860px){.echipa-grid{grid-template-columns:1.15fr .85fr;gap:64px;align-items:center}}
+
+/* Secțiunea pentru antreprenori: cele trei trepte (carduri cu imagine) și lista de video-uri */
+.trepte,.video-grid{display:grid;gap:16px}
+.treapta,.video-card{display:flex;flex-direction:column;padding:0;overflow:hidden}
+.treapta-foto .foto,.video-card .foto{border-radius:0}
+.treapta-corp{display:flex;flex-direction:column;gap:12px;flex:1;padding:24px 24px 26px}
+.treapta-corp .pastila{align-self:flex-start}
+.treapta h3{font-size:21px}
+.treapta h3 a{font-weight:600}
+.treapta h3 a:hover{text-decoration:none;color:var(--pruna-inchis)}
+.treapta p{flex:1;font-size:15.5px;color:var(--text2)}
+.video-corp{display:flex;flex-direction:column;gap:8px;padding:20px 22px 22px}
+.video-card h3{font-size:19px}
+.video-card p{font-size:15.5px;color:var(--text2)}
+.video-card .video-meta{font-weight:600}
+.video-card .mai{align-self:flex-start;margin-top:6px}
+@container pagina (min-width: 640px){.trepte,.video-grid{grid-template-columns:1fr 1fr}}
+@container pagina (min-width: 960px){.trepte,.video-grid{grid-template-columns:repeat(3,1fr);gap:20px}.trepte.doua{grid-template-columns:1fr 1fr;max-width:800px}}
+
+/* Locurile de structură (conținut de primit): punctate, cu eticheta „De completat”. Apar doar pe preview. */
+.structura{position:relative;border:1.5px dashed rgba(91,31,78,.32);border-radius:var(--r-m);padding:46px 20px 20px;color:var(--text2)}
+.structura-eticheta{position:absolute;top:15px;left:20px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text2)}
+.structura h3,.structura .bife li{color:var(--text2)}
+.structura .card{border-style:dashed;border-color:var(--linie-2)}
+.structura>p{font-size:16.5px}
+.card-include .structura{margin:10px 0 14px;padding:40px 16px 4px}
+.contact-grid .structura{margin-top:16px}
+.card-leg h3 a{font-weight:600}
+.pasi h3+p{margin-top:6px}

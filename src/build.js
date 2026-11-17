@@ -2,8 +2,10 @@
 // Scrie toate paginile din src/content.js și src/pagini/*, plus 404.html, robots.txt, sitemap.xml, llms.txt și pattern-ul cu emblema.
 const fs = require('fs');
 const path = require('path');
-const { SITE, PROGRAMARE, SERVICII, NAV, ACASA, SUBSOL, PAGINA404 } = require('./content.js');
+const { SITE, PROGRAMARE, ACADEMIA, SERVICII, NAV, ACASA, SUBSOL, PAGINA404 } = require('./content.js');
+const { IMAGINI } = require('./imagini.js');
 const SERV = require('./pagini/servicii.js');
+const AC = require('./pagini/academia.js');
 const ALTE = require('./pagini/alte.js');
 const BLOG = require('./pagini/blog.js');
 const LEGAL = require('./pagini/legal.js');
@@ -19,6 +21,10 @@ const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 const link = (rel, slug) => (slug ? `${rel}${slug}/` : rel);
 const abs = (slug) => `${SITE_URL}${link('/', slug)}`;
 const servDupaSlug = (slug) => SERVICII.find((s) => s.slug === slug);
+// Secțiunea pentru antreprenori apare pe preview; la lansare (--prod) doar dacă este marcată ca publicată în content.js
+const AC_ACTIV = !PROD || ACADEMIA.publicata;
+const acSlug = (sub) => (sub ? `${ACADEMIA.slug}/${sub}` : ACADEMIA.slug);
+const meniu = (lista) => lista.filter((n) => AC_ACTIV || n.slug !== ACADEMIA.slug);
 
 // Logourile din pachetul de brand, ca SVG inline (fără cereri suplimentare, culori exacte)
 function citesteSvg(file) {
@@ -88,7 +94,7 @@ ${ld.map(jsonld).join('\n')}
 }
 
 function header(rel, activ, areOferta) {
-  const items = NAV.map((n) => {
+  const items = meniu(NAV).map((n) => {
     const cls = n.slug === activ ? ' class="activ"' : '';
     if (n.sub) {
       return `<li class="are-sub"><a href="${link(rel, n.slug)}"${cls}>${esc(n.eticheta)}</a><button class="sub-btn" type="button" aria-expanded="false" aria-label="Deschide meniul ${esc(n.eticheta)}"><span></span></button>
@@ -120,7 +126,7 @@ function footer(rel) {
 <p>${esc(SITE.descriptor)}</p>
 </div>
 ${col('Servicii', [...SERVICII, { eticheta: 'Schimbare contabil', slug: 'schimbare-contabil' }])}
-${col('Firma', SUBSOL.firma)}
+${col('Firma', meniu(SUBSOL.firma))}
 <div class="col"><h2>Contact</h2><ul>
 <li>${esc(SITE.adresa)}<br>${esc(SITE.localitate)}</li>
 <li><a href="tel:${SITE.telefonTel}">${esc(SITE.telefon)}</a></li>
@@ -158,14 +164,51 @@ const titlu = (t, p, tag = 'h2') => `<div class="sec-cap"><${tag}>${esc(t)}</${t
 const pill = (t) => `<span class="pastila">${esc(t)}</span>`;
 const bife = (items) => `<ul class="bife">${items.map((i) => `<li>${esc(i)}</li>`).join('')}</ul>`;
 const sigiliu = (n) => `<span class="sigiliu" aria-hidden="true">${n}</span>`;
-const carduri = (items, cls = 'grid-3') => `<ul class="${cls}">${items.map((c) => `<li class="card"><span class="linie-mica" aria-hidden="true"></span><h3>${esc(c.nume)}</h3><p>${esc(c.text)}</p></li>`).join('')}</ul>`;
+const carduri = (items, cls = 'grid-3', rel = './') => `<ul class="${cls}">${items.map((c) => `<li class="card${c.slug ? ' card-leg' : ''}"><span class="linie-mica" aria-hidden="true"></span><h3>${c.slug ? `<a class="acopera" href="${link(rel, c.slug)}">${esc(c.nume)}</a>` : esc(c.nume)}</h3><p>${esc(c.text)}</p>${c.slug ? '<span class="mai" aria-hidden="true">Detalii</span>' : ''}</li>`).join('')}</ul>`;
 const pasi = (items, cls = '') => `<ol class="pasi ${cls}">${items.map((p, i) => `<li class="card">${sigiliu(i + 1)}<div><h3>${esc(p.nume)}</h3><p>${esc(p.text)}</p></div></li>`).join('')}</ol>`;
 const faq = (items, t = 'Întrebări frecvente') => `${titlu(t)}<div class="faq-list">${items.map((q) => `<details><summary>${esc(q.q)}</summary><p>${esc(q.a)}</p></details>`).join('')}</div>`;
 const proza = (par) => par.map((p) => `<p>${esc(p)}</p>`).join('');
 
-function capPagina({ crumbs = [], h1, lead, eticheta, meta }, rel) {
+// ---------- Imagini (lista locurilor și regulile: src/imagini.js)
+const FOTO_DIR = path.join(ROOT, 'assets/img/foto');
+const ETICHETE_LOC = { persoane: 'Poze persoane', birou: 'Poză birou', generata: 'Imagine' };
+const ICOANE_LOC = {
+  persoane: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/>',
+  birou: '<path d="M3 21h18M5 21V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v16M15 9h3a1 1 0 0 1 1 1v11M8 8h4M8 12h4M8 16h4"/>',
+  generata: '<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.5"/><path d="M21 16l-5-5-9 8"/>',
+};
+const locuri = new Map(); // numele locului -> există fișierul
+function foto(rel, nume, { raport, cls = '', lazy = true } = {}) {
+  const def = IMAGINI[nume];
+  if (!def) throw new Error(`Loc de imagine necunoscut: ${nume} (se adaugă în src/imagini.js)`);
+  const ext = ['webp', 'jpg', 'jpeg', 'png', 'avif'].find((e) => fs.existsSync(path.join(FOTO_DIR, `${nume}.${e}`)));
+  locuri.set(nume, !!ext);
+  const clase = `foto r-${raport || def.raport}${cls ? ` ${cls}` : ''}`;
+  if (ext) return `<img class="${clase}" src="${rel}assets/img/foto/${nume}.${ext}?v=${VER}" alt="${esc(def.alt)}"${lazy ? ' loading="lazy"' : ''} decoding="async">`;
+  if (PROD) return '';
+  const et = ETICHETE_LOC[def.tip];
+  return `<div class="${clase} loc loc-${def.tip}" data-loc="${nume}" role="img" aria-label="${esc(et)}"><svg viewBox="0 0 24 24" aria-hidden="true">${ICOANE_LOC[def.tip]}</svg><span>${esc(et)}</span></div>`;
+}
+
+// ---------- Locurile de structură: conținut care vine de la clientă. Pe preview apar punctate, cu eticheta „De completat”.
+const structuraLipsa = [];
+const sir = (n, f) => Array.from({ length: n }, (_, i) => f(i + 1));
+function structura(l, unde, continut) {
+  structuraLipsa.push(`${unde}: ${l.ce}`);
+  let inner = continut;
+  if (!inner) {
+    if (l.fel === 'carduri') inner = carduri(sir(l.n, (i) => ({ nume: `${l.nume} ${i}`, text: l.text })));
+    else if (l.fel === 'pasi') inner = pasi(sir(l.n, (i) => ({ nume: `${l.nume} ${i}`, text: l.text })), 'auto');
+    else if (l.fel === 'lista') inner = bife(sir(l.n, (i) => `${l.nume} ${i}`));
+    else inner = `<p>${esc(l.text)}</p>`;
+  }
+  return `<div class="structura"><span class="structura-eticheta">De completat</span>${inner}</div>`;
+}
+
+function capPagina({ crumbs = [], h1, lead, eticheta, meta, imagine }, rel) {
   const fir = crumbs.length ? `<nav class="crumbs" aria-label="Fir de navigare"><ol><li><a href="${link(rel)}">Acasă</a></li>${crumbs.map((c, i) => (i === crumbs.length - 1 ? `<li aria-current="page">${esc(c.nume)}</li>` : `<li><a href="${link(rel, c.slug)}">${esc(c.nume)}</a></li>`)).join('')}</ol></nav>` : '';
-  return `<section class="cap-pagina"><div class="wrap">${fir}${eticheta ? pill(eticheta) : ''}<h1>${esc(h1)}</h1>${lead ? `<p class="lead">${esc(lead)}</p>` : ''}${meta ? `<p class="meta">${meta}</p>` : ''}</div></section>`;
+  const text = `${fir}${eticheta ? pill(eticheta) : ''}<h1>${esc(h1)}</h1>${lead ? `<p class="lead">${esc(lead)}</p>` : ''}${meta ? `<p class="meta">${meta}</p>` : ''}`;
+  return `<section class="cap-pagina"><div class="wrap">${imagine ? `<div class="cap-grid"><div>${text}</div><div class="cap-foto">${imagine}</div></div>` : text}</div></section>`;
 }
 
 // Pagini legate care nu sunt servicii numerotate (cardul primește linia aurie în loc de sigiliu)
@@ -185,7 +228,19 @@ function programareLink(rel) {
   const url = SITE.programare && SITE.programare.url;
   return url ? `href="${esc(url)}" target="_blank" rel="noopener"` : `href="${link(rel, 'contact')}#programare"`;
 }
-const programareCard = (rel) => `<div class="programare-card"><h3>${esc(PROGRAMARE.scurtTitlu)}</h3><p>${esc(PROGRAMARE.scurtText)}</p><a class="btn btn-contur-ivoriu" ${programareLink(rel)}>${esc(PROGRAMARE.btn)}</a></div>`;
+function programareCard(rel) {
+  const img = foto(rel, 'adriana-portret', { cls: 'mic' });
+  return `<div class="programare-card${img ? ' cu-foto' : ''}">${img ? `<div class="programare-foto">${img}</div>` : ''}<div class="programare-text"><h3>${esc(PROGRAMARE.scurtTitlu)}</h3><p>${esc(PROGRAMARE.scurtText)}</p></div><a class="btn btn-contur-ivoriu" ${programareLink(rel)}>${esc(PROGRAMARE.btn)}</a></div>`;
+}
+// Banda „Vorbește cu Adriana Simion”. Pe Contact, cât nu există adresa calendarului, oferă telefonul și WhatsApp.
+function bandaProgramare(rel, { cls = 'crem', id, titlu: t = PROGRAMARE.titlu, text, peContact = false } = {}) {
+  const url = SITE.programare && SITE.programare.url;
+  const butoane = url || !peContact
+    ? `<a class="btn btn-pruna" ${programareLink(rel)}>${esc(PROGRAMARE.btn)}</a>`
+    : `<a class="btn btn-pruna" href="tel:${SITE.telefonTel}">Sună: ${esc(SITE.telefon)}</a><a class="btn btn-contur-pruna" href="https://wa.me/${SITE.whatsapp}" rel="noopener">${waIcon(20)} Scrie pe WhatsApp</a>`;
+  const img = foto(rel, 'adriana-portret');
+  return sec(`${cls} programare`, `<div class="programare-grid${img ? ' cu-foto' : ''}">${img ? `<div class="programare-foto">${img}</div>` : ''}<div><h2>${esc(t)}</h2><p>${esc(text || (url ? PROGRAMARE.text : PROGRAMARE.textFaraCalendar))}</p></div><div class="programare-butoane">${butoane}</div></div>`, id);
+}
 
 // Formularul de ofertă (pe prună), cu titlu și text proprii pe fiecare pagină
 function oferta(rel, cta = { titlu: ACASA.oferta.titlu, text: ACASA.oferta.text }) {
@@ -218,6 +273,12 @@ ${programareCard(rel)}
 
 // ---------- Pagina principală
 function hero(h, rel) {
+  const img = foto(rel, 'adriana-hero', { lazy: false });
+  const cadru = img
+    ? `<div class="foto-loc cu-foto">${img}</div>`
+    : `<div class="foto-loc" role="img" aria-label="Documente, stilou și calculator de birou, pe lemn, în lumină caldă">
+<span class="h h1"></span><span class="h h2"></span><span class="h h3"></span><span class="lin"></span>
+</div>`;
   return `<section class="hero">
 <div class="wrap hero-grid">
 <div class="hero-text">
@@ -229,9 +290,7 @@ function hero(h, rel) {
 </div>
 </div>
 <div class="hero-foto">
-<div class="foto-loc" role="img" aria-label="Documente, stilou și calculator de birou, pe lemn, în lumină caldă">
-<span class="h h1"></span><span class="h h2"></span><span class="h h3"></span><span class="lin"></span>
-</div>
+${cadru}
 </div>
 </div>
 <div class="wrap">
@@ -252,33 +311,40 @@ function acasaPage(rel) {
 <div>${pill(A.nisa.eticheta)}<h2>${esc(A.nisa.titlu)}</h2><p>${esc(A.nisa.text)}</p><a class="btn btn-pruna" href="${link(rel, A.nisa.btn.slug)}">${esc(A.nisa.btn.text)}</a></div>
 <div class="card card-lista">${bife(A.nisa.puncte)}</div>
 </div>`);
-  const proces = sec('proces crem', `${titlu(A.proces.titlu)}${pasi(A.proces.pasi)}
+  const fotoLucru = foto(rel, 'cum-lucram');
+  const proces = sec('proces crem', `${titlu(A.proces.titlu)}${fotoLucru ? `<div class="proces-grid"><div class="proces-foto">${fotoLucru}</div>${pasi(A.proces.pasi, 'doua')}</div>` : pasi(A.proces.pasi)}
 <div class="promisiuni pattern">
 <h3>${esc(A.proces.promisiuniTitlu)}</h3>
 <ul>${A.proces.promisiuni.map((p) => `<li><strong>${esc(p.nume)}</strong><p>${esc(p.text)}</p></li>`).join('')}</ul>
 </div>`);
   const tarife = sec('tarife', `${titlu(A.tarife.titlu, A.tarife.text)}${niveluri(A.tarife.niveluri, A.tarife.btn)}<p class="nota">${esc(A.tarife.nota)}</p>`, 'tarife');
-  const schimbare = sec('schimbare crem', `<div class="schimbare-grid">
+  const academia = AC_ACTIV ? sec('academia crem', `${titlu(A.academia.titlu, A.academia.text)}${trepte(rel)}<a class="link-sageata" href="${link(rel, ACADEMIA.slug)}">Vezi ${esc(ACADEMIA.nume)}</a>`) : '';
+  // Fondurile alternează ivoriu și crem; cu secțiunea pentru antreprenori, cele de după ea se decalează
+  const [f1, f2] = AC_ACTIV ? ['', ' crem'] : [' crem', ''];
+  const schimbare = sec(`schimbare${f1}`, `<div class="schimbare-grid">
 <div><h2>${esc(A.schimbare.titlu)}</h2><p>${esc(A.schimbare.text)}</p></div>
 <div><a class="btn btn-pruna" href="${link(rel, A.schimbare.btn.slug)}">${esc(A.schimbare.btn.text)}</a></div>
 </div>`);
-  const despre = sec('despre', `<div class="despre-grid">
+  const despre = sec(`despre${f2}`, `<div class="despre-grid">
 <div>${titlu(A.despre.titlu)}${proza(A.despre.paragrafe)}<div class="despre-actiuni"><a class="btn btn-pruna" ${programareLink(rel)}>${esc(PROGRAMARE.btn)}</a><a class="link-sageata" href="${link(rel, A.despre.btn.slug)}">${esc(A.despre.btn.text)}</a></div></div>
 ${panouFapte(A.despre.fapte)}
 </div>`);
-  const termene = sec('termene crem', `<div class="termene-grid">
+  const termene = sec(`termene${f1}`, `<div class="termene-grid">
 <div class="card termene-card">${pill(A.termene.eticheta)}<h2>${esc(A.termene.titlu)}</h2>
 <dl>${A.termene.randuri.map((r) => `<div><dt>${esc(r.data)}</dt><dd>${esc(r.text)}</dd></div>`).join('')}</dl></div>
 <div class="articole"><h2>${esc(A.blog.titlu)}</h2>
-<ul class="articole-grid">${BLOG.ARTICOLE.map((a) => artCard(a, rel)).join('')}</ul>
+<ul class="articole-grid">${BLOG.ARTICOLE.map((a) => artCard(a, rel, { oriz: true })).join('')}</ul>
 <a class="link-sageata" href="${link(rel, A.blog.btn.slug)}">${esc(A.blog.btn.text)}</a></div>
 </div>`);
-  const intrebari = sec('faq', faq(A.faq.intrebari, A.faq.titlu));
-  return [hero(A.hero, rel), cine, servicii, nisa, proces, tarife, schimbare, despre, termene, intrebari, oferta(rel)].join('\n');
+  const intrebari = sec(`faq${f2}`, faq(A.faq.intrebari, A.faq.titlu));
+  return [hero(A.hero, rel), cine, servicii, nisa, proces, tarife, academia, schimbare, despre, termene, intrebari, oferta(rel)].filter(Boolean).join('\n');
 }
 
 const panouFapte = (fapte) => `<div class="card despre-panou">${EMBLEMA}<dl>${fapte.map((f) => `<div><dt>${esc(f.nume)}</dt><dd>${esc(f.text)}</dd></div>`).join('')}</dl></div>`;
-const artCard = (a, rel) => `<li class="card art-card">${pill(a.cat)}<h3><a class="acopera" href="${link(rel, 'blog/' + a.slug)}">${esc(a.titlu)}</a></h3><p>${esc(a.rezumat)}</p><span class="data">${esc(a.dataText)}</span></li>`;
+function artCard(a, rel, { oriz = false } = {}) {
+  const img = foto(rel, `articol-${a.slug}`);
+  return `<li class="card art-card${oriz && img ? ' oriz' : ''}">${img ? `<div class="art-foto">${img}</div>` : ''}<div class="art-corp">${pill(a.cat)}<h3><a class="acopera" href="${link(rel, 'blog/' + a.slug)}">${esc(a.titlu)}</a></h3><p>${esc(a.rezumat)}</p><span class="data">${esc(a.dataText)}</span></div></li>`;
+}
 
 function niveluri(lista, btn) {
   return `<div class="niveluri">${lista.map((n) => `<div class="nivel${n.recomandat ? ' rec' : ''}">
@@ -293,7 +359,7 @@ ${bife(n.include)}
 
 // ---------- Paginile de servicii
 function paginaServiciu(p, rel) {
-  const cap = capPagina({ crumbs: [{ nume: 'Servicii', slug: 'servicii' }, { nume: p.h1 }], h1: p.h1, lead: p.lead }, rel);
+  const cap = capPagina({ crumbs: [{ nume: 'Servicii', slug: 'servicii' }, { nume: p.h1 }], h1: p.h1, lead: p.lead, imagine: foto(rel, `serviciu-${p.slug}`, { lazy: false }) }, rel);
   const intro = sec('intro', `<div class="intro-grid"><div class="proza">${proza(p.intro)}</div><div class="card card-include"><h2>${esc(p.include.titlu)}</h2>${bife(p.include.puncte)}</div></div>`);
   const pentru = sec('crem', `${titlu('Pentru cine')}${carduri(p.pentru)}`);
   const incepem = sec('', `${titlu('Cum începem')}${pasi(p.pasi, 'auto')}`);
@@ -307,7 +373,8 @@ function paginaHub(rel) {
   const cap = capPagina({ crumbs: [{ nume: 'Servicii' }], h1: H.h1, lead: H.lead }, rel);
   const lista = sec('', `<div class="serv-grid">${SERVICII.map((s, i) => servCard(s, rel, { lat: i === 0, text: i === 0 ? s.lung : undefined })).join('')}
 <div class="card serv-card card-cta"><h3>${esc(ACASA.servicii.cta.titlu)}</h3><p>${esc(ACASA.servicii.cta.text)}</p><a class="btn btn-auriu" href="#oferta">${esc(ACASA.servicii.cta.btn)}</a></div></div>`);
-  const extra = sec('crem', `${titlu(H.extra.titlu)}${carduri(H.extra.carduri, 'grid-2')}`);
+  const plus = [...H.extra.carduri, ...(AC_ACTIV ? [{ nume: ACADEMIA.nume, text: ACASA.academia.text, slug: ACADEMIA.slug }] : [])];
+  const extra = sec('crem', `${titlu(H.extra.titlu)}${carduri(plus, 'grid-2', rel)}`);
   return [cap, lista, extra, oferta(rel)].join('\n');
 }
 
@@ -336,7 +403,8 @@ function paginaLocal(rel) {
   const L = ALTE.LOCAL;
   const cap = capPagina({ crumbs: [{ nume: 'Contabilitate în Popești-Leordeni' }], h1: L.h1, lead: L.lead }, rel);
   const biroul = `Biroul este pe ${SITE.adresa}, în Popești-Leordeni. Întâlnirile se stabilesc cu programare.`;
-  const intro = sec('intro', `<div class="intro-grid"><div class="proza">${proza([...L.intro, biroul])}</div><div class="card card-include"><h2>${esc(L.zone.titlu)}</h2>${bife(L.zone.puncte)}</div></div>`);
+  const birouFoto = foto(rel, 'birou');
+  const intro = sec('intro', `<div class="intro-grid"><div><div class="proza">${proza([...L.intro, biroul])}</div>${birouFoto ? `<div class="foto-sub">${birouFoto}</div>` : ''}</div><div class="card card-include"><h2>${esc(L.zone.titlu)}</h2>${bife(L.zone.puncte)}</div></div>`);
   const serv = sec('crem', `${titlu('Serviciile noastre')}<div class="serv-grid patru">${L.servicii.map((sl) => servCard(servDupaSlug(sl), rel, { numar: false })).join('')}</div>`);
   const intrebari = sec('faq', faq(L.faq));
   return [cap, intro, serv, intrebari, oferta(rel, L.cta)].join('\n');
@@ -345,11 +413,15 @@ function paginaLocal(rel) {
 function paginaDespre(rel) {
   const D = ALTE.DESPRE;
   const cap = capPagina({ crumbs: [{ nume: 'Despre' }], h1: D.h1, lead: D.lead }, rel);
-  const poveste = sec('', `<div class="despre-grid"><div class="proza">${proza(D.poveste)}</div>${panouFapte(D.fapte)}</div>`);
+  const birouFoto = foto(rel, 'birou', { raport: 'lat' });
+  const poveste = sec('', `<div class="despre-grid"><div class="proza">${proza(D.poveste)}</div>${panouFapte(D.fapte)}</div>${birouFoto ? `<div class="foto-lata">${birouFoto}</div>` : ''}`);
   const princ = sec('crem', `${titlu(D.principii.titlu)}${carduri(D.principii.carduri, 'grid-4')}`);
   const prom = sec('', `<div class="promisiuni pattern"><h3>${esc(ACASA.proces.promisiuniTitlu)}</h3><ul>${ACASA.proces.promisiuni.map((p) => `<li><strong>${esc(p.nume)}</strong><p>${esc(p.text)}</p></li>`).join('')}</ul></div>`);
-  const cond = sec('crem', `<div class="intro-grid"><div>${titlu(D.conducere.titlu)}<p class="proza-p">${esc(D.conducere.text)}</p></div><div class="card card-persoana"><span class="sigiliu-mare" aria-hidden="true">${EMBLEMA}</span><h3>${esc(D.conducere.nume)}</h3><p>${esc(D.conducere.rol)}</p><a class="btn btn-pruna" ${programareLink(rel)}>${esc(PROGRAMARE.btn)}</a></div></div>`);
-  return [cap, poveste, princ, prom, cond, oferta(rel, D.cta)].join('\n');
+  const portret = foto(rel, 'adriana-birou');
+  const cond = sec('crem', `<div class="intro-grid"><div>${titlu(D.conducere.titlu)}<p class="proza-p">${esc(D.conducere.text)}</p></div><div class="card card-persoana">${portret ? `<div class="persoana-foto">${portret}</div>` : `<span class="sigiliu-mare" aria-hidden="true">${EMBLEMA}</span>`}<h3>${esc(D.conducere.nume)}</h3><p>${esc(D.conducere.rol)}</p><a class="btn btn-pruna" ${programareLink(rel)}>${esc(PROGRAMARE.btn)}</a></div></div>`);
+  const echipaFoto = foto(rel, 'echipa');
+  const echipa = sec('', `<div class="echipa-grid">${echipaFoto ? `<div>${echipaFoto}</div>` : ''}<div>${titlu(D.echipa.titlu)}<ul class="echipa-lista">${D.echipa.persoane.map((p) => `<li><strong>${esc(p.nume)}</strong><span>${esc(p.rol)}</span></li>`).join('')}</ul></div></div>`);
+  return [cap, poveste, princ, prom, cond, echipa, oferta(rel, D.cta)].join('\n');
 }
 
 function paginaContact(rel) {
@@ -384,11 +456,7 @@ ${pasi(C.dupa.pasi, 'lista')}
 </form>
 </div>`);
   // Programarea: cu adresa de pe calendarulmeu.ro, un buton către calendar; fără ea, telefon și WhatsApp
-  const url = SITE.programare && SITE.programare.url;
-  const butoane = url
-    ? `<a class="btn btn-pruna" href="${esc(url)}" target="_blank" rel="noopener">${esc(PROGRAMARE.btn)}</a>`
-    : `<a class="btn btn-pruna" href="tel:${SITE.telefonTel}">Sună: ${esc(SITE.telefon)}</a><a class="btn btn-contur-pruna" href="https://wa.me/${SITE.whatsapp}" rel="noopener">${waIcon(20)} Scrie pe WhatsApp</a>`;
-  const programare = sec('crem programare', `<div class="programare-grid"><div><h2>${esc(PROGRAMARE.titlu)}</h2><p>${esc(url ? PROGRAMARE.text : PROGRAMARE.textFaraCalendar)}</p></div><div class="programare-butoane">${butoane}</div></div>`, 'programare');
+  const programare = bandaProgramare(rel, { id: 'programare', peContact: true });
   const harta = sec('', `${titlu('Unde suntem', `${SITE.adresa}, ${SITE.localitate}`)}<div class="harta-acord" data-harta-q="${esc(C.harta.q)}" data-harta-titlu="${esc(C.harta.titlu)}"></div>`);
   const intrebari = sec('crem faq', faq(C.faq));
   return [cap, grid, programare, harta, intrebari].join('\n');
@@ -423,7 +491,8 @@ function blocuri(corp) {
 
 function paginaArticol(a, rel) {
   const cap = capPagina({ crumbs: [{ nume: 'Blog', slug: 'blog' }, { nume: a.titlu }], h1: a.titlu, eticheta: a.cat, meta: `<time datetime="${a.data}">${esc(a.dataText)}</time> · ${esc(SITE.nume)}` }, rel);
-  const corp = sec('', `<article class="proza articol">${blocuri(a.corp)}</article>`);
+  const coperta = foto(rel, `articol-${a.slug}`, { lazy: false });
+  const corp = sec('', `<article class="proza articol">${coperta ? `<div class="articol-foto">${coperta}</div>` : ''}${blocuri(a.corp)}</article>`);
   const altele = BLOG.ARTICOLE.filter((x) => x.slug !== a.slug);
   const alte = sec('crem', `${titlu('Alte articole')}<ul class="articole-grid doua">${altele.map((x) => artCard(x, rel)).join('')}</ul>`);
   const cta = sec('', `<div class="schimbare-grid"><div><h2>Întrebări despre firma ta?</h2><p>Scrie-ne ce te încurcă. Îți răspundem în scris, pe situația ta.</p></div><div><a class="btn btn-pruna" href="${link(rel, 'contact')}">Cere o ofertă</a></div></div>`);
@@ -434,6 +503,79 @@ function paginaLegal(p, rel) {
   const cap = capPagina({ crumbs: [{ nume: p.h1 }], h1: p.h1, lead: `Ultima actualizare: ${p.data}` }, rel);
   const corp = sec('', `<div class="proza legal">${p.intro ? `<p class="intro">${esc(p.intro)}</p>` : ''}${blocuri(p.corp)}</div>`);
   return [cap, corp].join('\n');
+}
+
+// ---------- Secțiunea pentru antreprenori: pagina de intrare, ghidul, video-urile, mentoratul
+function treaptaCard(t, rel) {
+  const img = foto(rel, t.imagine, { raport: '4x3' });
+  return `<article class="card treapta">${img ? `<div class="treapta-foto">${img}</div>` : ''}<div class="treapta-corp">${pill(t.pastila)}<h3><a class="acopera" href="${link(rel, acSlug(t.slug))}">${esc(t.nume)}</a></h3><p>${esc(t.text)}</p><span class="mai" aria-hidden="true">${esc(t.btn)}</span></div></article>`;
+}
+function trepte(rel, fara) {
+  return `<div class="trepte${fara ? ' doua' : ''}">${AC.TREPTE.filter((t) => t.slug !== fara).map((t) => treaptaCard(t, rel)).join('')}</div>`;
+}
+const totIn = (rel, fara) => `${titlu(`Tot în ${ACADEMIA.nume}`)}${trepte(rel, fara)}`;
+const firAc = (p) => [{ nume: ACADEMIA.eticheta, slug: ACADEMIA.slug }, { nume: p.h1 }];
+const acord = (id, text, rel) => `<div class="camp camp-lat bifa"><input id="${id}" name="acord" type="checkbox" required><label for="${id}">${esc(text)} <a href="${link(rel, 'politica-de-confidentialitate')}">Politica de confidențialitate</a></label></div>`;
+
+function paginaAcademia(rel) {
+  const H = AC.HUB;
+  const cap = capPagina({ crumbs: [{ nume: ACADEMIA.eticheta }], h1: H.h1, lead: H.lead }, rel);
+  const lista = sec('', trepte(rel));
+  const cum = sec('crem', `${titlu(H.cum.titlu)}${pasi(H.cum.pasi, 'auto')}`);
+  const echipe = sec('schimbare', `<div class="schimbare-grid"><div><h2>${esc(H.echipe.titlu)}</h2><p>${esc(H.echipe.text)}</p></div><div><a class="btn btn-contur-pruna" href="${link(rel, 'contact')}">${esc(H.echipe.btn)}</a></div></div>`);
+  return [cap, lista, cum, echipe, bandaProgramare(rel)].join('\n');
+}
+
+function paginaGhid(rel) {
+  const G = AC.GHID;
+  const cap = capPagina({ crumbs: firAc(G), h1: G.h1, lead: G.lead, eticheta: 'Gratuit' }, rel);
+  const img = foto(rel, 'academia-ghid', { lazy: false });
+  const corp = sec('', `<div class="contact-grid">
+<div>${img ? `<div class="foto-sus">${img}</div>` : ''}<h2>${esc(G.cuprins.titlu)}</h2>${structura(G.cuprins.loc, G.h1)}</div>
+<form class="formular card" id="ghid" action="#" method="post" novalidate>
+<h2 class="camp-lat">${esc(G.formular.titlu)}</h2>
+<input type="hidden" name="formular" value="ghid">
+<div class="camp camp-lat"><label for="g-nume">Nume și prenume</label><input id="g-nume" name="nume" type="text" autocomplete="name" required></div>
+<div class="camp camp-lat"><label for="g-email">E-mail</label><input id="g-email" name="email" type="email" autocomplete="email" required></div>
+${acord('g-acord', G.formular.consimtamant, rel)}
+<div class="camp camp-lat"><button class="btn btn-auriu" type="submit">${esc(G.formular.btn)}</button></div>
+</form>
+</div>`);
+  const pentru = sec('crem', `${titlu(G.pentru.titlu)}${structura(G.pentru.loc, G.h1)}`);
+  return [cap, corp, pentru, sec('', totIn(rel, 'ghid'))].join('\n');
+}
+
+function paginaVideo(rel) {
+  const V = AC.VIDEO, L = V.lista;
+  const cap = capPagina({ crumbs: firAc(V), h1: V.h1, lead: V.lead, eticheta: 'În curând' }, rel);
+  const carduriVideo = `<ul class="video-grid">${sir(L.n, (i) => `<li class="card video-card">${foto(rel, `video-${i}`)}<div class="video-corp"><h3>${esc(L.nume)} ${i}</h3><p>${esc(L.text)}</p><p class="video-meta">${esc(L.meta)}</p><a class="mai" href="#comanda">${esc(L.btn)}</a></div></li>`).join('')}</ul>`;
+  const lista = sec('', structura(L, V.h1, carduriVideo));
+  const cum = sec('crem', `${titlu(V.cum.titlu)}${pasi(V.cum.pasi, 'auto')}`);
+  const comanda = sec('', `<div class="contact-grid">
+<div><h2>${esc(V.formular.titlu)}</h2><p class="sec-text">${esc(V.formular.text)}</p></div>
+<form class="formular card" id="comanda" action="#" method="post" novalidate>
+<input type="hidden" name="formular" value="video">
+<div class="camp"><label for="v-nume">Nume și prenume</label><input id="v-nume" name="nume" type="text" autocomplete="name" required></div>
+<div class="camp"><label for="v-email">E-mail</label><input id="v-email" name="email" type="email" autocomplete="email" required></div>
+<div class="camp"><label for="v-telefon">Telefon</label><input id="v-telefon" name="telefon" type="tel" autocomplete="tel" required></div>
+<div class="camp"><label for="v-video">Video-ul dorit</label><select id="v-video" name="video">${sir(L.n, (i) => `<option>${esc(L.nume)} ${i}</option>`).join('')}</select></div>
+<div class="camp camp-lat"><label for="v-factura">Date pentru factură <span class="opt">(firmă și CUI sau nume și adresă)</span></label><textarea id="v-factura" name="factura" rows="3" required></textarea></div>
+${acord('v-acord', V.formular.consimtamant, rel)}
+<div class="camp camp-lat"><button class="btn btn-auriu" type="submit">${esc(V.formular.btn)}</button></div>
+</form>
+</div>`);
+  return [cap, lista, cum, comanda, sec('crem', totIn(rel, 'video'))].join('\n');
+}
+
+function paginaMentorat(rel) {
+  const M = AC.MENTORAT;
+  const cap = capPagina({ crumbs: firAc(M), h1: M.h1, lead: M.lead, eticheta: 'Cu programare', imagine: foto(rel, 'adriana-mentorat', { raport: '4x3', lazy: false }) }, rel);
+  const intro = sec('intro', `<div class="intro-grid"><div class="proza">${proza(M.intro)}</div><div class="card card-include"><h2>${esc(M.include.titlu)}</h2>${structura(M.include.loc, M.h1)}</div></div>`);
+  const pentru = sec('crem', `${titlu(M.pentru.titlu)}${structura(M.pentru.loc, M.h1)}`);
+  const decurge = sec('', `${titlu(M.decurge.titlu)}${structura(M.decurge.loc, M.h1)}`);
+  const pret = sec('crem', `${titlu(M.pret.titlu)}${structura(M.pret.loc, M.h1)}`);
+  const inscriere = bandaProgramare(rel, { cls: '', titlu: M.inscriere.titlu, text: M.inscriere.text });
+  return [cap, intro, pentru, decurge, pret, inscriere, sec('crem', totIn(rel, 'mentorat'))].join('\n');
 }
 
 function pagina404(rel) {
@@ -487,6 +629,14 @@ for (const [slug, p, fn, activ, f] of simple) {
 pagina('contact', ALTE.CONTACT, paginaContact, 'contact', { areOferta: true, ld: [ORGANIZATIA, crumbsLd([{ nume: 'Acasă', url: abs('') }, { nume: 'Contact', url: abs('contact') }]), faqLd(ALTE.CONTACT.faq)] });
 pagina('multumim', { ...ALTE.MULTUMIM, noindex: true }, paginaMultumim, 'multumim');
 
+// Secțiunea pentru antreprenori (la schimbarea adresei din content.js, folderul vechi se șterge de mână)
+if (!AC_ACTIV) fs.rmSync(path.join(ROOT, ACADEMIA.slug), { recursive: true, force: true });
+if (AC_ACTIV) {
+  const firLd = (p) => crumbsLd([{ nume: 'Acasă', url: abs('') }, { nume: ACADEMIA.eticheta, url: abs(acSlug()) }, ...(p ? [{ nume: p.h1, url: abs(acSlug(p.slug)) }] : [])]);
+  pagina(acSlug(), AC.HUB, paginaAcademia, ACADEMIA.slug, { ld: [firLd()] });
+  for (const [p, fn] of [[AC.GHID, paginaGhid], [AC.VIDEO, paginaVideo], [AC.MENTORAT, paginaMentorat]]) pagina(acSlug(p.slug), p, fn, ACADEMIA.slug, { ld: [firLd(p)] });
+}
+
 // Blog
 pagina('blog', BLOG.INDEX, paginaBlog, 'blog', { ld: [crumbsLd([{ nume: 'Acasă', url: abs('') }, { nume: 'Blog', url: abs('blog') }])] });
 for (const a of BLOG.ARTICOLE) {
@@ -515,4 +665,10 @@ for (const p of [...publice.map((x) => (x.slug ? `${x.slug}/index.html` : 'index
   const dash = html.match(/[\u2013\u2014]/g);
   if (dash) console.warn('ATENȚIE: liniuțe lungi în', p, dash.length);
 }
+const libere = [...locuri].filter(([, exista]) => !exista).map(([n]) => n);
+console.log(`imagini: ${locuri.size - libere.length} puse, ${libere.length} locuri libere${libere.length ? `: ${libere.join(', ')}` : ''}`);
+const deCompletat = [...new Set(structuraLipsa)];
+if (deCompletat.length) console.log(`structură de completat (${deCompletat.length}):\n  ${deCompletat.join('\n  ')}`);
+if (PROD && libere.length) console.warn('ATENȚIE, LANSARE: locurile de imagine fără fișier nu se afișează.');
+if (PROD && deCompletat.length) { console.error('EROARE, LANSARE: au rămas locuri de structură necompletate în pagini.'); process.exitCode = 1; }
 console.log('gata:', publice.length + 2, 'pagini, PROD =', PROD, 'SITE_URL =', SITE_URL);

@@ -122,6 +122,15 @@ const DESPRE = {
       { nume: 'Spunem din timp', text: 'Termene, sume de plată, schimbări de lege: le afli înainte, nu după.' },
     ],
   },
+  // Echipa: numele și funcțiile exact cum au fost trimise pentru cărțile de vizită (29.10.2026)
+  echipa: {
+    titlu: 'Echipa',
+    persoane: [
+      { nume: 'Adriana Simion', rol: 'Expert-contabil' },
+      { nume: 'Ionela Lamba', rol: 'Contabil Senior' },
+      { nume: 'Andreea Ciocirlan', rol: 'Contabil Junior' },
+    ],
+  },
   conducere: {
     titlu: 'Cine conduce firma',
     nume: 'Adriana Simion',

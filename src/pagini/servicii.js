@@ -8,10 +8,9 @@ const HUB = {
   h1: 'Servicii',
   lead: 'Șapte servicii pentru firma ta, de la înființare la salarizare. Un singur interlocutor, răspunsuri în scris.',
   extra: {
-    titlu: 'Lucrăm și cu',
+    titlu: 'În plus',
     carduri: [
       { nume: 'ONG-uri și asociații', text: 'Evidență pe proiecte, raportări către finanțatori, contracte de sponsorizare și declarațiile specifice. Scrie-ne și îți spunem cum lucrăm cu asociația ta.' },
-      { nume: 'Workshop-uri pentru antreprenori', text: 'Sesiuni practice pentru firme și pentru echipele lor: ce documente contează, cum citești situația firmei, ce întrebi contabilul. Se organizează la cerere.' },
     ],
   },
 };

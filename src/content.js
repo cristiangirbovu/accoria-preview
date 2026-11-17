@@ -26,12 +26,16 @@ const SITE = {
 // calendarulmeu.ro nu permite înglobarea calendarului în pagină, deci programarea se deschide într-o filă nouă.
 const PROGRAMARE = {
   titlu: 'Vorbește cu Adriana Simion',
-  text: 'Preferi o discuție directă? Alege o zi și o oră pentru o ședință online de 30 de minute cu Adriana Simion.',
-  textFaraCalendar: 'Preferi o discuție directă? Stabilim împreună o zi și o oră pentru o ședință online de 30 de minute cu Adriana Simion.',
+  text: 'Preferi o discuție directă? Alege o zi și o oră pentru o ședință online gratuită, de 30 de minute, cu Adriana Simion.',
+  textFaraCalendar: 'Preferi o discuție directă? Stabilim împreună o zi și o oră pentru o ședință online gratuită, de 30 de minute, cu Adriana Simion.',
   btn: 'Stabilește o întâlnire',
   scurtTitlu: 'Preferi o discuție directă?',
-  scurtText: '30 de minute, online, cu Adriana Simion.',
+  scurtText: '30 de minute, online, gratuit, cu Adriana Simion.',
 };
+
+// Secțiunea pentru antreprenori: ghid gratuit, video-uri, mentorat. Numele din meniu, numele lung și adresa se schimbă doar de aici.
+// publicata: cât este false, secțiunea apare doar pe preview; la lansare (--prod) lipsește din meniu, din pagini și din sitemap.
+const ACADEMIA = { eticheta: 'Academia', slug: 'academia', nume: 'Academia Accoria', publicata: false };
 
 // Meniul principal. Serviciile apar în meniul derulant și în subsol, în ordinea priorităților din chestionar.
 const SERVICII = [
@@ -47,6 +51,7 @@ const SERVICII = [
 const NAV = [
   { eticheta: 'Servicii', slug: 'servicii', sub: SERVICII },
   { eticheta: 'Tarife', slug: 'tarife' },
+  { eticheta: ACADEMIA.eticheta, slug: ACADEMIA.slug },
   { eticheta: 'Despre', slug: 'despre' },
   { eticheta: 'Blog', slug: 'blog' },
   { eticheta: 'Contact', slug: 'contact' },
@@ -118,6 +123,10 @@ const ACASA = {
     ],
     btn: { text: 'Cere o ofertă', href: '#oferta' },
   },
+  academia: {
+    titlu: ACADEMIA.nume,
+    text: 'Pentru antreprenorii care vor să își înțeleagă cifrele: un ghid gratuit, video-uri pe subiecte clare și mentorat.',
+  },
   schimbare: {
     titlu: 'Ai deja contabil?',
     text: 'Preluăm evidența fără declarații pierdute: verificăm ce s-a depus, ce lipsește și preluăm documentele direct de la contabilul anterior.',
@@ -184,6 +193,7 @@ const SUBSOL = {
   firma: [
     { eticheta: 'Despre', slug: 'despre' },
     { eticheta: 'Tarife', slug: 'tarife' },
+    { eticheta: ACADEMIA.eticheta, slug: ACADEMIA.slug },
     { eticheta: 'Blog', slug: 'blog' },
     { eticheta: 'Contact', slug: 'contact' },
     { eticheta: 'Contabilitate în Popești-Leordeni', slug: 'contabilitate-popesti-leordeni' },
@@ -195,4 +205,4 @@ const SUBSOL = {
   ],
 };
 
-module.exports = { SITE, PROGRAMARE, SERVICII, NAV, ACASA, SUBSOL, PAGINA404 };
+module.exports = { SITE, PROGRAMARE, ACADEMIA, SERVICII, NAV, ACASA, SUBSOL, PAGINA404 };

@@ -53,10 +53,9 @@
   }
 
   // Formularul de ofertă: în machetă nu trimite nicăieri; validarea nativă rămâne pentru implementare
-  var form = document.querySelector('.formular');
-  if (form) {
+  document.querySelectorAll('.formular').forEach(function (form) {
     form.addEventListener('submit', function (e) {
       if (form.getAttribute('action') === '#') e.preventDefault();
     });
-  }
+  });
 })();
