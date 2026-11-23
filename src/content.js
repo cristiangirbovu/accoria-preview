@@ -17,9 +17,9 @@ const SITE = {
   localitate: 'Popești-Leordeni, jud. Ilfov',
   codPostal: '077160',
   domeniu: 'https://accoria.ro',
-  // Programarea online: adresa paginii de programări de pe calendarulmeu.ro, de completat după crearea contului
-  // (exemplu: 'https://accoria.calendarulmeu.ro/'). Cât este null, butonul duce la secțiunea de programare de pe Contact.
-  programare: { url: null },
+  // Programarea online: pagina publică de pe calendarulmeu.ro (cont Accoria configurat pe 23.11.2026:
+  // serviciul „Discuție online gratuită”, 30 min, L-V 10:00-16:00). Cu null, butonul duce la secțiunea de programare de pe Contact.
+  programare: { url: 'https://accoria.calendarulmeu.ro/' },
 };
 
 // Programarea unei discuții cu Adriana Simion: păstrată din versiunea anterioară a site-ului, la cererea clientei.
