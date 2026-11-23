@@ -311,8 +311,8 @@ function acasaPage(rel) {
 <div>${pill(A.nisa.eticheta)}<h2>${esc(A.nisa.titlu)}</h2><p>${esc(A.nisa.text)}</p><a class="btn btn-pruna" href="${link(rel, A.nisa.btn.slug)}">${esc(A.nisa.btn.text)}</a></div>
 <div class="card card-lista">${bife(A.nisa.puncte)}</div>
 </div>`);
-  const fotoLucru = foto(rel, 'cum-lucram');
-  const proces = sec('proces crem', `${titlu(A.proces.titlu)}${fotoLucru ? `<div class="proces-grid"><div class="proces-foto">${fotoLucru}</div>${pasi(A.proces.pasi, 'doua')}</div>` : pasi(A.proces.pasi)}
+  const fotoLucru = foto(rel, 'cum-lucram', { raport: 'lat' });
+  const proces = sec('proces crem', `${titlu(A.proces.titlu)}${fotoLucru ? `<div class="proces-foto">${fotoLucru}</div>` : ''}${pasi(A.proces.pasi)}
 <div class="promisiuni pattern">
 <h3>${esc(A.proces.promisiuniTitlu)}</h3>
 <ul>${A.proces.promisiuni.map((p) => `<li><strong>${esc(p.nume)}</strong><p>${esc(p.text)}</p></li>`).join('')}</ul>
