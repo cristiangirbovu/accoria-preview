@@ -109,7 +109,7 @@ const DESPRE = {
   h1: 'Despre Accoria',
   lead: 'O firmă de contabilitate din Popești-Leordeni, condusă de Adriana Simion, pentru antreprenori care vor să înțeleagă cifrele firmei, nu doar să le depună.',
   poveste: [
-    'Accoria este numele nou al unei firme de contabilitate care lucrează din 2015 cu antreprenori din București și Ilfov. Numele s-a schimbat, felul de a lucra a rămas: evidență la zi, declarații la termen și explicații pe înțelesul tău.',
+    'Accoria este numele nou al unei firme de contabilitate care lucrează din 2015 cu antreprenori din București, Ilfov și din toată țara. Numele s-a schimbat, felul de a lucra a rămas: evidență la zi, declarații la termen și explicații pe înțelesul tău.',
     'Am învățat din experiența de antreprenor că cifrele contează doar dacă le înțelegi la timp. De aceea răspundem în scris, spunem din timp ce urmează și nu ne ascundem după termeni de specialitate.',
     'Lucrăm cu SRL-uri mici și mijlocii, cu magazine online și fizice, cu firme la început de drum și cu ONG-uri. Căutăm clienți care vor o colaborare pe termen lung, nu cel mai mic preț pentru luna aceasta.',
   ],

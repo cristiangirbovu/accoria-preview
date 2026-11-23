@@ -61,8 +61,8 @@ const ACASA = {
   title: 'Accoria: contabilitate și consultanță fiscală în București și Ilfov',
   description: 'Firmă de contabilitate pentru SRL-uri din București și Ilfov: evidență la zi, declarații depuse la termen, consultanță fiscală și salarizare. Cere o ofertă.',
   hero: {
-    h1: 'Contabilitate și consultanță fiscală pentru SRL-uri din București și Ilfov',
-    lead: 'Evidență la zi, declarații depuse la termen și răspunsuri clare înainte să iei o decizie.',
+    h1: 'Contabilitate și consultanță fiscală pentru SRL-uri',
+    lead: 'Evidență la zi, declarații depuse la termen și răspunsuri clare înainte să iei o decizie. Biroul e în Popești-Leordeni; lucrăm cu firme din toată țara, cu documentele online.',
     btnPrimar: { text: 'Cere o ofertă', href: '#oferta' },
     // Al doilea buton din prima secțiune duce la programare (cererea clientei din 17.11.2026); tarifele rămân în meniu
     btnSecundar: { text: 'Stabilește o întâlnire', programare: true },
@@ -135,7 +135,7 @@ const ACASA = {
   despre: {
     titlu: 'Despre Accoria',
     paragrafe: [
-      'Accoria este firma de contabilitate condusă de Adriana Simion, cu biroul în Popești-Leordeni. Lucrăm cu antreprenori din București și Ilfov care vor să înțeleagă cifrele firmei, nu doar să le depună.',
+      'Accoria este firma de contabilitate condusă de Adriana Simion, cu biroul în Popești-Leordeni. Lucrăm cu antreprenori din București, Ilfov și din toată țara care vor să înțeleagă cifrele firmei, nu doar să le depună.',
       'Vorbim pe limba ta, răspundem prompt și aducem experiența de antreprenor în fiecare discuție. Așa arată contabilitatea pe care o vrem și pentru firma noastră.',
     ],
     fapte: [

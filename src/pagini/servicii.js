@@ -21,7 +21,7 @@ const PAGINI = [
     title: 'Contabilitate SRL în București și Ilfov | Accoria',
     description: 'Contabilitate externalizată pentru SRL-uri: evidență lunară, declarații la termen, bilanț și un contabil dedicat. Prețuri de la 450 lei pe lună. Cere o ofertă.',
     h1: 'Contabilitate pentru SRL-uri',
-    lead: 'Evidența ținută la zi, declarațiile depuse la termen și un contabil care îți explică cifrele. Pentru firme mici și mijlocii din București și Ilfov, cu sau fără angajați.',
+    lead: 'Evidența ținută la zi, declarațiile depuse la termen și un contabil care îți explică cifrele. Pentru firme mici și mijlocii, cu sau fără angajați.',
     intro: [
       'Contabilitatea unui SRL nu înseamnă doar declarații depuse. Înseamnă să știi, în fiecare lună, cât ai de plată, de ce și ce urmează. Așa lucrăm: preluăm documentele, le verificăm, închidem luna și îți spunem unde ești cu firma.',
       'Lucrăm cu antreprenori care vor să înțeleagă ce se întâmplă în firmă, nu doar să semneze. Documentele circulă electronic, iar întrebările primesc răspuns în scris.',
