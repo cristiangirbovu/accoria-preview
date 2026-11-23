@@ -179,6 +179,12 @@ const ACASA = {
     servicii: ['Contabilitate lunară', 'Contabilitate pentru magazin online', 'Înființare firmă', 'Modificări la Registrul Comerțului', 'Consultanță fiscală', 'Salarizare', 'Schimbare contabil', 'Altceva'],
     consimtamant: 'Sunt de acord ca datele trimise să fie folosite pentru a răspunde cererii mele.',
     btn: 'Trimite cererea',
+    // Mesajele afișate deasupra formularului când trimite.php întoarce vizitatorul cu ?eroare=... (doar pe accoria.ro)
+    erori: {
+      date: 'Verifică numele, telefonul, e-mailul și bifa de acord, apoi trimite din nou.',
+      limita: 'Ai trimis deja câteva cereri în ultima oră. Ne poți suna la 0744 522 577 sau ne poți scrie la contact@accoria.ro.',
+      trimitere: 'Cererea nu a plecat din cauza unei erori. Încearcă din nou peste câteva minute sau scrie-ne la contact@accoria.ro.',
+    },
   },
 };
 

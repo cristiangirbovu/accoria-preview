@@ -16,6 +16,9 @@ const SITE_URL = PROD ? SITE.domeniu : 'https://cristiangirbovu.github.io/accori
 const AN = new Date().getFullYear();
 const AZI = new Date().toISOString().slice(0, 10);
 const VER = Date.now().toString(36).slice(-6);
+// Ieșirea: preview-ul se scrie în depozit (GitHub Pages); lansarea (--prod) într-un folder separat, gata de urcat pe HostGate
+const OUT = PROD ? path.join(ROOT, '..', 'lansare') : ROOT;
+if (PROD) fs.rmSync(OUT, { recursive: true, force: true });
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const link = (rel, slug) => (slug ? `${rel}${slug}/` : rel);
@@ -242,6 +245,17 @@ function bandaProgramare(rel, { cls = 'crem', id, titlu: t = PROGRAMARE.titlu, t
   return sec(`${cls} programare`, `<div class="programare-grid${img ? ' cu-foto' : ''}">${img ? `<div class="programare-foto">${img}</div>` : ''}<div><h2>${esc(t)}</h2><p>${esc(text || (url ? PROGRAMARE.text : PROGRAMARE.textFaraCalendar))}</p></div><div class="programare-butoane">${butoane}</div></div>`, id);
 }
 
+// Începutul formularului de ofertă. Pe preview nu trimite nicăieri; la lansare merge la trimite.php (server/trimite.php),
+// cu validarea browserului, pagina de origine și timpul de completare (puse de app.js) și o capcană pentru roboți.
+function formStart(cls, id) {
+  const E = ACASA.oferta.erori;
+  const atr = `class="${cls}"${id ? ` id="${id}"` : ''}`;
+  if (!PROD) return `<form ${atr} action="#" method="post" novalidate>`;
+  return `<form ${atr} action="/trimite.php" method="post" data-eroare-date="${esc(E.date)}" data-eroare-limita="${esc(E.limita)}" data-eroare-trimitere="${esc(E.trimitere)}">
+<input type="hidden" name="pagina" value=""><input type="hidden" name="t" value="">
+<div class="capcana" aria-hidden="true"><input name="confirmare_site" type="text" tabindex="-1" autocomplete="off"></div>`;
+}
+
 // Formularul de ofertă (pe prună), cu titlu și text proprii pe fiecare pagină
 function oferta(rel, cta = { titlu: ACASA.oferta.titlu, text: ACASA.oferta.text }) {
   const O = ACASA.oferta;
@@ -257,7 +271,7 @@ function oferta(rel, cta = { titlu: ACASA.oferta.titlu, text: ACASA.oferta.text 
 </ul>
 ${programareCard(rel)}
 </div>
-<form class="formular" action="#" method="post" novalidate>
+${formStart('formular')}
 <div class="camp"><label for="f-nume">Nume și prenume</label><input id="f-nume" name="nume" type="text" autocomplete="name" required></div>
 <div class="camp"><label for="f-telefon">Telefon</label><input id="f-telefon" name="telefon" type="tel" autocomplete="tel" required></div>
 <div class="camp"><label for="f-email">E-mail</label><input id="f-email" name="email" type="email" autocomplete="email" required></div>
@@ -442,7 +456,7 @@ function paginaContact(rel) {
 <h2 class="h-mic sus">${esc(C.dupa.titlu)}</h2>
 ${pasi(C.dupa.pasi, 'lista')}
 </div>
-<form class="formular card" id="oferta" action="#" method="post" novalidate>
+${formStart('formular card', 'oferta')}
 <h2 class="camp-lat">Cere o ofertă</h2>
 <div class="camp"><label for="f-nume">Nume și prenume</label><input id="f-nume" name="nume" type="text" autocomplete="name" required></div>
 <div class="camp"><label for="f-telefon">Telefon</label><input id="f-telefon" name="telefon" type="tel" autocomplete="tel" required></div>
@@ -588,7 +602,7 @@ ${EMBLEMA}
 
 // ---------- Scriere
 function write(file, html) {
-  const f = path.join(ROOT, file);
+  const f = path.join(OUT, file);
   fs.mkdirSync(path.dirname(f), { recursive: true });
   fs.writeFileSync(f, html);
   console.log('scris', file, (html.length / 1024).toFixed(1), 'KB');
@@ -630,7 +644,7 @@ pagina('contact', ALTE.CONTACT, paginaContact, 'contact', { areOferta: true, ld:
 pagina('multumim', { ...ALTE.MULTUMIM, noindex: true }, paginaMultumim, 'multumim');
 
 // Secțiunea pentru antreprenori (la schimbarea adresei din content.js, folderul vechi se șterge de mână)
-if (!AC_ACTIV) fs.rmSync(path.join(ROOT, ACADEMIA.slug), { recursive: true, force: true });
+if (!AC_ACTIV) fs.rmSync(path.join(OUT, ACADEMIA.slug), { recursive: true, force: true });
 if (AC_ACTIV) {
   const firLd = (p) => crumbsLd([{ nume: 'Acasă', url: abs('') }, { nume: ACADEMIA.eticheta, url: abs(acSlug()) }, ...(p ? [{ nume: p.h1, url: abs(acSlug(p.slug)) }] : [])]);
   pagina(acSlug(), AC.HUB, paginaAcademia, ACADEMIA.slug, { ld: [firLd()] });
@@ -657,11 +671,18 @@ write('404.html', render({ slug: '404.html', title: PAGINA404.title, description
 write('robots.txt', PROD ? `User-agent: *\nAllow: /\nSitemap: ${SITE.domeniu}/sitemap.xml\n` : 'User-agent: *\nDisallow: /\n');
 write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${publice.map((p) => `<url><loc>${abs(p.slug)}</loc><lastmod>${AZI}</lastmod></url>`).join('\n')}\n</urlset>\n`);
 write('llms.txt', `# ${SITE.nume}\n\n> ${SITE.descriptor}. Firmă de contabilitate din Popești-Leordeni (jud. Ilfov), pentru SRL-uri din București și Ilfov: contabilitate, consultanță fiscală, înființări și modificări la Registrul Comerțului, analiză cash-flow, salarizare. Denumire legală: ${SITE.firma}. Contact: ${SITE.email}, ${SITE.telefon}.\n\n## Pagini\n\n${publice.map((p) => `- [${p.title.replace(/ \| Accoria$/, '')}](${abs(p.slug)}): ${p.description}`).join('\n')}\n`);
-write('.nojekyll', '');
+if (!PROD) write('.nojekyll', '');
+// Verificarea Search Console pentru https://accoria.ro/ (contul AMPLIO); fișierul rămâne pe server și după verificare
+if (PROD) write('googlef993ef3c2812b465.html', 'google-site-verification: googlef993ef3c2812b465.html');
+// Lansarea: resursele (CSS, JS, fonturi, imagini) și fișierele de server (formularul PHP, .htaccess) lângă pagini
+if (PROD) {
+  fs.cpSync(path.join(ROOT, 'assets'), path.join(OUT, 'assets'), { recursive: true });
+  for (const f of ['trimite.php', '.htaccess']) fs.copyFileSync(path.join(ROOT, '..', 'server', f), path.join(OUT, f));
+}
 
 // Verificare: niciun em dash sau en dash în HTML-ul generat
 for (const p of [...publice.map((x) => (x.slug ? `${x.slug}/index.html` : 'index.html')), '404.html', 'multumim/index.html']) {
-  const html = fs.readFileSync(path.join(ROOT, p), 'utf8');
+  const html = fs.readFileSync(path.join(OUT, p), 'utf8');
   const dash = html.match(/[\u2013\u2014]/g);
   if (dash) console.warn('ATENȚIE: liniuțe lungi în', p, dash.length);
 }
@@ -671,4 +692,4 @@ const deCompletat = [...new Set(structuraLipsa)];
 if (deCompletat.length) console.log(`structură de completat (${deCompletat.length}):\n  ${deCompletat.join('\n  ')}`);
 if (PROD && libere.length) console.warn('ATENȚIE, LANSARE: locurile de imagine fără fișier nu se afișează.');
 if (PROD && deCompletat.length) { console.error('EROARE, LANSARE: au rămas locuri de structură necompletate în pagini.'); process.exitCode = 1; }
-console.log('gata:', publice.length + 2, 'pagini, PROD =', PROD, 'SITE_URL =', SITE_URL);
+console.log('gata:', publice.length + 2, 'pagini, PROD =', PROD, 'SITE_URL =', SITE_URL, 'în', OUT);

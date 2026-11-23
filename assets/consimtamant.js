@@ -5,8 +5,8 @@
 (function () {
   var CHEIE = 'ac_cookie';
   var VALABIL_ZILE = 365;
-  // Codurile de măsurare se completează la lansare; cele goale nu se încarcă.
-  var MASURARE = { ga4: '', clarity: '', googleAds: '', metaPixel: '' };
+  // Codurile de măsurare (GA4 și Clarity create pe 23.11.2026 în contul AMPLIO, de predat clientei); cele goale nu se încarcă.
+  var MASURARE = { ga4: 'G-5KB7FFVZ53', clarity: 'zi43t0aa9c', googleAds: '', metaPixel: '' };
   // Măsurarea pornește doar pe domeniul site-ului, nu și pe copiile de lucru.
   var PE_DOMENIU = /(^|\.)accoria\.ro$/.test(location.hostname);
   var PAGINA_COOKIE = document.documentElement.getAttribute('data-pagina-cookie') || '#';
