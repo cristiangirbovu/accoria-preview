@@ -12,8 +12,8 @@ const SITE = {
   telefonTel: '+40744522577',
   whatsapp: '40744522577',
   email: 'contact@accoria.ro',
-  // Adresa publică = cea din contract și de pe fișa Google (decizia 3 din capitolul 12 al studiului)
-  adresa: 'Str. Drumul Fermei nr. 69E, et. 2, ap. 18',
+  // Adresa biroului (comunicată de Cristian pe 23.11.2026). Sediul social din paginile legale rămâne cel din acte.
+  adresa: 'Str. Amurgului nr. 23B, et. 3, ap. 20',
   localitate: 'Popești-Leordeni, jud. Ilfov',
   codPostal: '077160',
   domeniu: 'https://accoria.ro',

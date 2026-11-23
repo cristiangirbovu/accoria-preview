@@ -163,7 +163,7 @@ const CONTACT = {
       { nume: 'Stabilim pașii', text: 'Preluarea documentelor, data de început și cine este contabilul tău dedicat.' },
     ],
   },
-  harta: { q: 'Strada Drumul Fermei 69E, Popești-Leordeni, Ilfov', titlu: 'Harta: biroul Accoria, Popești-Leordeni' },
+  harta: { q: 'Strada Amurgului 23B, Popești-Leordeni, Ilfov', titlu: 'Harta: biroul Accoria, Popești-Leordeni' },
   faq: [
     { q: 'În cât timp răspundeți?', a: 'În cel mult 2 zile lucrătoare, în scris. Dacă e urgent, sună-ne.' },
     { q: 'Pot veni la birou?', a: 'Da, cu programare, ca să te aștepte cineva și să ai timpul necesar.' },
