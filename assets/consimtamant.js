@@ -61,7 +61,8 @@
       window.dataLayer = window.dataLayer || [];
       window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
       if (!gtagIncarcat) {
-        window.gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
+        // Starea implicită = alegerea deja făcută; altfel prima afișare de pagină pleacă cu acordul încă refuzat și GA4 nu o raportează
+        window.gtag('consent', 'default', { analytics_storage: stat ? 'granted' : 'denied', ad_storage: mkt ? 'granted' : 'denied', ad_user_data: mkt ? 'granted' : 'denied', ad_personalization: mkt ? 'granted' : 'denied' });
         incarcaScript('https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(MASURARE.ga4 || MASURARE.googleAds));
         window.gtag('js', new Date());
         gtagIncarcat = true;
